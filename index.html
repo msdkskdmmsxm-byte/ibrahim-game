@@ -2,12 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>سايبر أرينا - معركة القنابل والمراحل</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>سايبر أرينا: معركة الهلاك - Cyber Arena Evolution</title>
+  <meta name="theme-color" content="#030308">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Chakra+Petch:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Chakra+Petch:wght@600;800;900&display=swap" rel="stylesheet">
   
   <style>
     * {
@@ -15,6 +21,7 @@
       user-select: none;
       -webkit-user-select: none;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     body {
       font-family: 'Tajawal', sans-serif;
@@ -22,29 +29,42 @@
       overflow: hidden;
       margin: 0;
       padding: 0;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
     }
     .hud-card {
-      background: rgba(10, 15, 30, 0.82);
+      background: rgba(8, 12, 28, 0.85);
       backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(56, 189, 248, 0.35);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
     }
-    .neon-btn {
-      box-shadow: 0 0 25px rgba(244, 63, 94, 0.6), inset 0 0 15px rgba(244, 63, 94, 0.3);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    .neon-glow-btn {
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.55), inset 0 0 15px rgba(244, 63, 94, 0.35);
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .neon-btn:active {
-      transform: scale(0.96);
+    .neon-glow-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 35px rgba(244, 63, 94, 0.9);
+    }
+    .neon-cyan-btn {
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.5), inset 0 0 15px rgba(6, 182, 212, 0.3);
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .neon-cyan-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 35px rgba(6, 182, 212, 0.85);
     }
 
-    /* أزرار تحكم مرفوعة للأعلى لتناسب قبضة الهاتف */
+    /* أزرار التحكم المرتفعة لملاءمة إبهام اليد والشاشات الكبيرة */
     #joystickContainer {
       position: absolute;
       bottom: 120px;
-      left: 30px;
+      left: 28px;
       width: 140px;
       height: 140px;
-      background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.04) 70%, transparent 100%);
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, rgba(14, 165, 233, 0.05) 70%, transparent 100%);
       border: 2px dashed rgba(56, 189, 248, 0.45);
       border-radius: 50%;
       display: flex;
@@ -58,7 +78,7 @@
       height: 58px;
       background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7);
       border-radius: 50%;
-      box-shadow: 0 0 22px rgba(56, 189, 248, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.6);
       position: absolute;
       pointer-events: none;
       transform: translate(0px, 0px);
@@ -67,7 +87,7 @@
     .action-btn-group {
       position: absolute;
       bottom: 120px;
-      right: 25px;
+      right: 22px;
       display: flex;
       gap: 12px;
       align-items: flex-end;
@@ -80,104 +100,147 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 24px rgba(0, 0, 0, 0.7);
       transition: transform 0.08s ease;
+      touch-action: none;
     }
     .round-action-btn:active {
       transform: scale(0.9);
     }
     #attackBtn {
-      width: 82px;
-      height: 82px;
+      width: 84px;
+      height: 84px;
       background: radial-gradient(circle at 35% 35%, #ef4444, #991b1b);
-      border: 2.5px solid rgba(252, 165, 165, 0.7);
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
+      border: 2.5px solid rgba(252, 165, 165, 0.8);
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.75);
     }
     #bombBtn {
-      width: 70px;
-      height: 70px;
+      width: 72px;
+      height: 72px;
       background: radial-gradient(circle at 35% 35%, #f97316, #c2410c);
-      border: 2.5px solid rgba(253, 186, 116, 0.7);
-      box-shadow: 0 0 22px rgba(249, 115, 22, 0.7);
+      border: 2.5px solid rgba(253, 186, 116, 0.8);
+      box-shadow: 0 0 24px rgba(249, 115, 22, 0.75);
     }
     #dashBtn {
-      width: 65px;
-      height: 65px;
+      width: 66px;
+      height: 66px;
       background: radial-gradient(circle at 35% 35%, #ec4899, #9d174d);
-      border: 2px solid rgba(244, 114, 182, 0.7);
-      box-shadow: 0 0 18px rgba(236, 72, 153, 0.6);
+      border: 2px solid rgba(244, 114, 182, 0.8);
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.65);
+    }
+
+    /* سكرول بار مخصص لقائمة المراحل */
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #06b6d4;
+      border-radius: 8px;
     }
   </style>
 </head>
-<body class="relative w-screen h-screen overflow-hidden text-white">
+<body class="relative w-screen h-screen overflow-hidden text-white font-sans">
 
-  <!-- الكانفاس الرئيسي -->
+  <!-- الكانفاس الرئيسي فائق الأداء -->
   <canvas id="gameCanvas" class="absolute inset-0 z-0"></canvas>
 
-  <!-- واجهة المستخدم وشريط المعلومات -->
+  <!-- شريط واجهة المستخدم أثناء القتال (HUD) -->
   <div id="uiOverlay" class="relative z-10 w-full h-full pointer-events-none flex flex-col justify-between p-3 md:p-6">
     
-    <!-- شريط القيادة HUD -->
+    <!-- شريط القيادة العلوي -->
     <div id="hudBar" class="w-full flex justify-between items-start opacity-0 transition-opacity duration-300">
-      <div class="hud-card rounded-2xl p-2.5 flex flex-col gap-1 min-w-[140px] md:min-w-[210px]">
+      
+      <!-- عداد صحة اللاعب والدرع -->
+      <div class="hud-card rounded-2xl p-2.5 flex flex-col gap-1 min-w-[150px] md:min-w-[220px]">
         <div class="flex justify-between items-center text-xs font-bold">
-          <span class="text-rose-400">❤️ نقاط الحياة</span>
+          <span class="text-rose-400 flex items-center gap-1">❤️ الصحة</span>
           <span id="hpText" class="font-mono text-cyan-300">100%</span>
         </div>
-        <div class="w-full bg-black/70 rounded-full h-2 p-0.5 border border-cyan-500/30 overflow-hidden">
+        <div class="w-full bg-black/70 rounded-full h-2.5 p-0.5 border border-cyan-500/30 overflow-hidden">
           <div id="hpBar" class="h-full rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-cyan-400 transition-all duration-150" style="width: 100%;"></div>
         </div>
         
-        <!-- تقدم الهدف للمرحلة -->
-        <div class="flex justify-between items-center text-[10px] font-bold mt-1">
+        <!-- تقدم هدف المرحلة -->
+        <div class="flex justify-between items-center text-[10px] font-bold mt-0.5">
           <span class="text-amber-400">🎯 هدف المرحلة</span>
           <span id="stageTargetText" class="text-cyan-300 font-mono">0 / 600</span>
         </div>
         <div class="w-full bg-black/70 rounded-full h-1.5 border border-amber-500/30 overflow-hidden">
-          <div id="stageProgressBar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-150" style="width: 0%;"></div>
+          <div id="stageProgressBar" class="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 transition-all duration-150" style="width: 0%;"></div>
+        </div>
+
+        <!-- حالة الدش والتعزيزات النشطة -->
+        <div class="flex justify-between items-center text-[10px] font-bold text-gray-300">
+          <span>⚡ الدش: <b id="dashState" class="text-emerald-400">جاهز</b></span>
+          <span id="buffIndicator" class="text-amber-300 hidden font-mono">🔥 مضاعف</span>
         </div>
       </div>
 
-      <!-- إحصائيات المرحلة والسكور والقنابل -->
-      <div class="hud-card rounded-2xl px-4 py-2 text-center pointer-events-auto flex flex-col items-center">
-        <div class="text-[10px] text-cyan-300 font-bold uppercase tracking-wider">النقاط الكلية</div>
-        <div id="scoreVal" class="text-xl md:text-2xl font-black text-amber-300 font-mono">0</div>
-        <div class="text-xs text-gray-300 font-bold flex gap-3 mt-0.5">
-          <span>المرحلة: <b id="stageNumVal" class="text-pink-400 font-mono">1</b></span>
-          <span>القنابل: <b id="bombsLeftVal" class="text-orange-400 font-mono">5</b> 💣</span>
+      <!-- مؤشر المرحلة وشريط الزعيم إذا وجد -->
+      <div class="flex flex-col items-center gap-1 pointer-events-auto">
+        <div class="hud-card rounded-2xl px-4 py-2 text-center flex flex-col items-center min-w-[140px]">
+          <div class="text-[10px] text-cyan-300 font-bold uppercase tracking-wider">النقاط الإجمالية</div>
+          <div id="scoreVal" class="text-2xl font-black text-amber-300 font-mono">0</div>
+          <div class="text-[11px] text-gray-300 font-bold flex gap-3 mt-0.5">
+            <span>المرحلة: <b id="stageNumVal" class="text-pink-400 font-mono">1</b></span>
+            <span>الوحوش: <b id="killsVal" class="text-cyan-300 font-mono">0</b> 💀</span>
+          </div>
+        </div>
+
+        <!-- شريط صحة الزعيم (يظهر فقط في مراحل الزعماء) -->
+        <div id="bossHud" class="hidden hud-card rounded-xl px-3 py-1.5 flex flex-col gap-1 w-56 md:w-80 border-rose-500/50">
+          <div class="flex justify-between text-[11px] font-black text-rose-400">
+            <span id="bossName">👹 زعيم الهلاك الفضائي</span>
+            <span id="bossHpText" class="font-mono">100%</span>
+          </div>
+          <div class="w-full bg-black/80 rounded-full h-2 overflow-hidden border border-rose-500/40">
+            <div id="bossHpBar" class="h-full bg-gradient-to-r from-rose-600 via-red-500 to-amber-400 transition-all duration-100" style="width: 100%;"></div>
+          </div>
         </div>
       </div>
 
-      <!-- زر الصوت -->
-      <button id="muteBtn" class="hud-card p-3 rounded-2xl text-cyan-300 active:scale-90 pointer-events-auto transition">
-        <svg id="audioOnIcon" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-        </svg>
-        <svg id="audioOffIcon" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-        </svg>
-      </button>
+      <!-- قائمة أزرار التحكم السريع (كتم الصوت + إيقاف مؤقت + اهتزاز) -->
+      <div class="flex gap-1.5 pointer-events-auto">
+        <button id="screenShakeToggle" title="اهتزاز الشاشة" class="hud-card p-2.5 rounded-2xl text-cyan-300 active:scale-90 transition">
+          <span id="shakeIcon">📳</span>
+        </button>
+        <button id="muteBtn" title="الصوت" class="hud-card p-2.5 rounded-2xl text-cyan-300 active:scale-90 transition">
+          <svg id="audioOnIcon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+          <svg id="audioOffIcon" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        </button>
+        <button id="pauseBtn" title="إيقاف مؤقت" class="hud-card p-2.5 rounded-2xl text-amber-300 active:scale-90 transition font-mono font-bold">
+          ⏸️
+        </button>
+      </div>
     </div>
 
-    <!-- مجموعة أزرار التحكم المرفوعة للأعلى -->
+    <!-- مجموعة أزرار اللمس المرفوعة للأعلى لتناسب أصابع الهاتف -->
     <div id="controlsGroup" class="w-full relative opacity-0 transition-opacity duration-300">
       <div id="joystickContainer">
         <div id="joystickKnob"></div>
       </div>
 
       <div class="action-btn-group">
-        <!-- زر القنبلة الخداعية والتفجير -->
+        <!-- زر القنبلة الذكية الخداعية والتفجير -->
         <button id="bombBtn" class="round-action-btn">
           <span id="bombBtnIcon" class="text-2xl">💣</span>
           <span id="bombBtnLabel" class="text-[9px] font-black">ازرع (5)</span>
         </button>
-        <!-- زر الهجوم بالسلاح المختار -->
+        <!-- زر الهجوم الفوري بالسلاح -->
         <button id="attackBtn" class="round-action-btn">
           <span class="text-3xl">⚔️</span>
           <span class="text-[10px] font-black tracking-wider">ضربة</span>
         </button>
-        <!-- زر الاندفاع -->
+        <!-- زر الاندفاع السريع Dash -->
         <button id="dashBtn" class="round-action-btn">
           <span class="text-xl">⚡</span>
           <span class="text-[9px] font-black">اندفاع</span>
@@ -186,115 +249,246 @@
     </div>
   </div>
 
-  <!-- القائمة الرئيسية واختيار الشخصية والسلاح -->
-  <div id="startScreen" class="absolute inset-0 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md z-40 transition-all duration-300">
-    <div class="hud-card max-w-md w-full rounded-3xl p-5 md:p-7 text-center border-2 border-cyan-500/40 shadow-2xl overflow-y-auto max-h-[95vh]">
-      <h1 class="text-3xl md:text-5xl font-black mb-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
-        سـايـبـر أريـنـا
-      </h1>
-      <p class="text-xs text-gray-300 mb-4 font-semibold">
-        اجتز المراحل، ازرع القنابل الخداعية لجذب الوحوش وتفجيرهم، واختر سلاحك المفضل!
+  <!-- القائمة الرئيسية الاحترافية -->
+  <div id="startScreen" class="absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl z-40 transition-all duration-300">
+    <div class="hud-card max-w-md w-full rounded-3xl p-5 md:p-7 text-center border-2 border-cyan-500/40 shadow-2xl overflow-y-auto max-h-[95vh] custom-scroll">
+      
+      <div class="flex items-center justify-center gap-2 mb-1">
+        <span class="text-3xl">⚡</span>
+        <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 font-mono tracking-tight">
+          سايبر أرينا
+        </h1>
+        <span class="text-3xl">⚡</span>
+      </div>
+      <p class="text-xs text-cyan-200/80 mb-4 font-semibold">
+        معركة البقاء ضد جحافل الروبوتات والوحوش الفضائية!
       </p>
 
+      <!-- أزرار الإجراءات الرئيسية -->
+      <div class="flex flex-col gap-2.5 mb-5">
+        <button id="resumeBtn" class="neon-cyan-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 font-black text-lg text-white tracking-wider flex items-center justify-center gap-2">
+          ▶️ متابعة اللعب (المرحلة <span id="savedStageBadge">1</span>)
+        </button>
+        
+        <button id="openStagesBtn" class="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-600 font-black text-base text-white tracking-wider hover:brightness-110 active:scale-95 transition shadow-lg shadow-purple-900/40 flex items-center justify-center gap-2">
+          🗺️ قائمة المراحل (30 مرحلة)
+        </button>
+
+        <button id="installPwaBtn" class="hidden w-full py-2.5 rounded-2xl bg-emerald-600/90 font-bold text-sm text-white tracking-wider active:scale-95 transition border border-emerald-400/50 flex items-center justify-center gap-2">
+          📲 تثبيت اللعبة على الشاشة الرئيسية
+        </button>
+      </div>
+
       <!-- اختيار المقاتل -->
-      <div class="mb-3">
-        <label class="block text-[11px] uppercase tracking-widest text-cyan-300 font-bold mb-2">اختر المحارب:</label>
+      <div class="mb-3 text-right">
+        <label class="block text-[11px] uppercase tracking-widest text-cyan-300 font-bold mb-2">1. اختر البطل المقاتل:</label>
         <div class="grid grid-cols-3 gap-2" id="heroSelector">
-          <div data-hero="ninja" class="hero-card cursor-pointer p-2.5 rounded-2xl border-2 border-cyan-400 bg-cyan-950/40 flex flex-col items-center">
-            <span class="text-2xl mb-1">🥷</span>
+          <div data-hero="ninja" class="hero-card cursor-pointer p-2 rounded-2xl border-2 border-cyan-400 bg-cyan-950/40 flex flex-col items-center">
+            <span class="text-2xl mb-0.5">🥷</span>
             <span class="text-xs font-bold text-cyan-300">النينجا</span>
-            <span class="text-[9px] text-gray-400">فائق السرعة</span>
+            <span class="text-[9px] text-gray-400">سرعة ومراوغة</span>
           </div>
-          <div data-hero="mech" class="hero-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
-            <span class="text-2xl mb-1">🤖</span>
+          <div data-hero="mech" class="hero-card cursor-pointer p-2 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-0.5">🤖</span>
             <span class="text-xs font-bold text-amber-300">السايبورغ</span>
-            <span class="text-[9px] text-gray-400">صحة ودرع هائل</span>
+            <span class="text-[9px] text-gray-400">درع ثقيل</span>
           </div>
-          <div data-hero="trooper" class="hero-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
-            <span class="text-2xl mb-1">⚡</span>
+          <div data-hero="trooper" class="hero-card cursor-pointer p-2 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-0.5">⚡</span>
             <span class="text-xs font-bold text-pink-300">الكوماندوز</span>
-            <span class="text-[9px] text-gray-400">متوازن ومراوغ</span>
+            <span class="text-[9px] text-gray-400">معدل توازن</span>
           </div>
         </div>
       </div>
 
       <!-- اختيار السلاح -->
-      <div class="mb-4">
-        <label class="block text-[11px] uppercase tracking-widest text-amber-300 font-bold mb-2">اختر ترسانة السلاح:</label>
+      <div class="mb-4 text-right">
+        <label class="block text-[11px] uppercase tracking-widest text-amber-300 font-bold mb-2">2. اختر السلاح الأساسي:</label>
         <div class="grid grid-cols-3 gap-2" id="weaponSelector">
-          <div data-weapon="katana" class="weapon-card cursor-pointer p-2.5 rounded-2xl border-2 border-amber-400 bg-amber-950/40 flex flex-col items-center">
-            <span class="text-2xl mb-1">🗡️</span>
+          <div data-weapon="katana" class="weapon-card cursor-pointer p-2 rounded-2xl border-2 border-amber-400 bg-amber-950/40 flex flex-col items-center">
+            <span class="text-2xl mb-0.5">🗡️</span>
             <span class="text-xs font-bold text-amber-300">كاتانا نيون</span>
-            <span class="text-[9px] text-gray-400">ضربات سريعة</span>
+            <span class="text-[9px] text-gray-400">سريع وقاطع</span>
           </div>
-          <div data-weapon="hammer" class="weapon-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
-            <span class="text-2xl mb-1">🔨</span>
+          <div data-weapon="hammer" class="weapon-card cursor-pointer p-2 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-0.5">🔨</span>
             <span class="text-xs font-bold text-cyan-300">مطرقة صدمة</span>
-            <span class="text-[9px] text-gray-400">ضرر دائري ضخم</span>
+            <span class="text-[9px] text-gray-400">سحق محيطي</span>
           </div>
-          <div data-weapon="spear" class="weapon-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
-            <span class="text-2xl mb-1">⚡</span>
+          <div data-weapon="spear" class="weapon-card cursor-pointer p-2 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-0.5">⚡</span>
             <span class="text-xs font-bold text-pink-300">رمح ليزر</span>
-            <span class="text-[9px] text-gray-400">مدى بعيد خارق</span>
+            <span class="text-[9px] text-gray-400">مدى خارق</span>
           </div>
         </div>
       </div>
 
-      <button id="startBtn" class="neon-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-cyan-500 font-black text-xl text-white tracking-wider mb-2">
-        ⚔️ خوض المعركة الآن
+      <button id="newGameBtn" class="neon-glow-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-cyan-500 font-black text-xl text-white tracking-wider mb-2">
+        ⚔️ بدء معركة جديدة
       </button>
 
-      <div class="text-[10px] text-gray-400 bg-black/40 p-2 rounded-xl border border-white/5">
-        💡 ازرع القنبلة واهرب! ستجذب الوحوش نحوها ثم اضغط زر التفجير لإبادتهم!
+      <div class="text-[10px] text-gray-400 bg-black/50 p-2.5 rounded-xl border border-white/5 text-center">
+        💡 نظام النقاط الصارم: الوحش العادي (20)، السريع (25)، المدرع (40)، الضخم (50)، البعيد (35)، النادر (60)، والزعيم (200)!
       </div>
     </div>
   </div>
 
-  <!-- شاشة الفوز بالمرحلة والانتقال -->
-  <div id="stageClearScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg z-50">
+  <!-- شاشة قائمة المراحل التفاعلية (30 مرحلة) 🗺️ -->
+  <div id="stagesModal" class="hidden absolute inset-0 flex items-center justify-center p-3 md:p-6 bg-black/90 backdrop-blur-2xl z-50">
+    <div class="hud-card max-w-2xl w-full h-[90vh] rounded-3xl p-4 md:p-6 flex flex-col border-2 border-purple-500/50 shadow-2xl">
+      
+      <div class="flex justify-between items-center pb-3 border-b border-white/10 mb-3">
+        <div>
+          <h2 class="text-2xl font-black text-purple-300 flex items-center gap-2">
+            <span>🗺️</span> خريطة المراحل الـ 30
+          </h2>
+          <p class="text-[11px] text-gray-400">اختر مرحلة مفتوحة لخوض القتال وتحقيق أعلى سكور</p>
+        </div>
+        <button id="closeStagesModal" class="p-2 bg-white/10 rounded-xl text-gray-300 hover:text-white text-lg font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- شبكة المراحل الـ 30 -->
+      <div class="flex-1 overflow-y-auto custom-scroll pr-1">
+        <div id="stagesGrid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2.5 pb-4">
+          <!-- يتم إنشاؤها بالجافاسكريبت تلقائياً -->
+        </div>
+      </div>
+
+      <!-- نافذة تفاصيل المرحلة المحددة -->
+      <div id="stageDetailsBox" class="mt-2 p-3 bg-black/60 rounded-2xl border border-purple-500/30 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="text-right">
+          <div class="text-xs font-bold text-cyan-300" id="detStageTitle">المرحلة 1: أطلال نيون</div>
+          <div class="text-[10px] text-gray-400 mt-0.5" id="detStageDesc">الهدف: 600 نقطة | الأعداء: موجات خفيفة</div>
+          <div class="text-[10px] text-amber-400" id="detStageHighscore">أعلى نتيجة: 0</div>
+        </div>
+        <button id="playSelectedStageBtn" class="neon-cyan-btn px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-sm whitespace-nowrap active:scale-95 transition">
+          🚀 العب الآن
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- شاشة الفوز بالمرحلة والانتقال 🏆 -->
+  <div id="stageClearScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl z-50">
     <div class="hud-card max-w-sm w-full rounded-3xl p-6 text-center border-2 border-emerald-500/70 shadow-2xl">
       <div class="text-5xl mb-2 animate-bounce">🏆</div>
-      <h2 class="text-3xl font-black text-emerald-400 mb-1">اكتملت المرحلة!</h2>
-      <p id="stageClearDesc" class="text-gray-300 text-xs mb-5">تمت تصفية المنطقة وفتح البوابة للمرحلة القادمة!</p>
+      <h2 class="text-3xl font-black text-emerald-400 mb-1">اكتملت المرحلة بنجاح!</h2>
+      <p id="stageClearDesc" class="text-gray-300 text-xs mb-4">تم تطهير القطاع بالكامل وفتح المرحلة القادمة!</p>
       
-      <div class="bg-gray-950/70 rounded-2xl p-3 mb-5 border border-white/10 text-xs text-amber-300 font-bold">
-        تمت تعبئة 5 قنابل جديدة لمرحلتك القادمة! 💣
+      <!-- إحصائيات المرحلة -->
+      <div class="bg-gray-950/80 rounded-2xl p-3.5 mb-4 border border-white/10 grid grid-cols-3 gap-2 text-center">
+        <div>
+          <div class="text-[10px] text-gray-400">النقاط المكتسبة</div>
+          <div id="clearScoreVal" class="text-lg font-black text-amber-300 font-mono">0</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-gray-400">الوحوش المهزومة</div>
+          <div id="clearKillsVal" class="text-lg font-black text-cyan-300 font-mono">0</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-gray-400">الوقت</div>
+          <div id="clearTimeVal" class="text-lg font-black text-pink-300 font-mono">00:00</div>
+        </div>
       </div>
 
-      <button id="nextStageBtn" class="neon-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-black text-lg">
-        🚀 الانتقال للمرحلة التالية
-      </button>
+      <!-- ترقيات ومكافأة -->
+      <div class="bg-emerald-950/40 rounded-xl p-2.5 mb-4 border border-emerald-500/30 text-xs text-emerald-300 font-bold">
+        ✅ تم تجديد 5 قنابل خداعية للمرحلة القادمة 💣
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <button id="nextStageBtn" class="neon-cyan-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-black text-lg">
+          🚀 المرحلة التالية
+        </button>
+        <button id="replayClearBtn" class="w-full py-2.5 rounded-2xl bg-white/10 text-gray-300 font-bold text-sm hover:text-white">
+          🔄 إعادة المرحلة
+        </button>
+        <button id="menuClearBtn" class="w-full py-2 rounded-2xl text-gray-400 hover:text-gray-200 text-xs font-semibold">
+          🏠 القائمة الرئيسية
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- شاشة الخسارة -->
-  <div id="lossScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg z-50">
+  <!-- شاشة الخسارة 💀 -->
+  <div id="lossScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl z-50">
     <div class="hud-card max-w-sm w-full rounded-3xl p-6 text-center border-2 border-rose-500/60 shadow-2xl">
-      <div class="text-5xl mb-2">💀</div>
+      <div class="text-5xl mb-2 animate-pulse">💀</div>
       <h2 class="text-3xl font-black text-rose-500 mb-1">سقط المحارب!</h2>
-      <p class="text-gray-300 text-xs mb-5">حاصرتك الوحوش في أعماق الساحة!</p>
-      <div class="bg-gray-950/70 rounded-2xl p-3.5 mb-5 border border-white/10 flex justify-around">
+      <p class="text-gray-300 text-xs mb-4">تمت محاصرتك والتغلب عليك، جهّز استراتيجيتك وأعد المحاولة!</p>
+      
+      <div class="bg-gray-950/80 rounded-2xl p-3 mb-5 border border-white/10 flex justify-around">
         <div>
-          <div class="text-[11px] text-gray-400">النقاط الكلية</div>
-          <div id="finalScoreTxt" class="text-2xl font-black text-amber-300 font-mono">0</div>
+          <div class="text-[11px] text-gray-400">النقاط المسجلة</div>
+          <div id="lossFinalScore" class="text-2xl font-black text-amber-300 font-mono">0</div>
         </div>
         <div class="border-l border-white/10"></div>
         <div>
           <div class="text-[11px] text-gray-400">المرحلة</div>
-          <div id="finalStageTxt" class="text-2xl font-black text-cyan-300 font-mono">1</div>
+          <div id="lossFinalStage" class="text-2xl font-black text-cyan-300 font-mono">1</div>
         </div>
       </div>
-      <button id="restartBtn" class="neon-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-black text-lg">
-        🔄 إعادة النزال من البداية
-      </button>
+
+      <div class="flex flex-col gap-2">
+        <button id="restartStageBtn" class="neon-glow-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-black text-lg">
+          🔄 إعادة المحاولة
+        </button>
+        <button id="lossMenuBtn" class="w-full py-2.5 rounded-2xl bg-white/10 text-gray-300 hover:text-white font-bold text-sm">
+          🏠 القائمة الرئيسية
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
     /* ==========================================================================
-       محرك الصوت الإلكتروني
+       1. خدمة PWA والتثبيت التلقائي دون ملفات إضافية (In-Memory Service Worker)
        ========================================================================== */
-    const SoundFx = {
+    let deferredPrompt = null;
+    const installPwaBtn = document.getElementById('installPwaBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installPwaBtn.classList.remove('hidden');
+    });
+
+    installPwaBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installPwaBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      // تسجيل Service Worker عبر Blob ليعمل فورياً وبدون أخطاء استضافة
+      const swCode = `
+        const CACHE_NAME = 'cyber-arena-v10';
+        self.addEventListener('install', (e) => {
+          self.skipWaiting();
+        });
+        self.addEventListener('activate', (e) => {
+          e.waitUntil(clients.claim());
+        });
+        self.addEventListener('fetch', (e) => {
+          e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+        });
+      `;
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    }
+
+    /* ==========================================================================
+       2. محرك الصوت الرقمي المتقدم (Web Audio API Synthesizer)
+       ========================================================================== */
+    const SoundEngine = {
       ctx: null,
       muted: false,
       init() {
@@ -302,9 +496,11 @@
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           this.ctx = new AudioContext();
         }
-        if (this.ctx.state === 'suspended') this.ctx.resume();
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
       },
-      tone(freq, type = 'sine', duration = 0.15, vol = 0.25, drop = true) {
+      play(freq, type = 'sine', duration = 0.12, vol = 0.25, drop = true) {
         if (this.muted) return;
         try {
           this.init();
@@ -313,7 +509,7 @@
           osc.type = type;
           osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
           if (drop) {
-            osc.frequency.exponentialRampToValueAtTime(Math.max(20, freq * 0.2), this.ctx.currentTime + duration);
+            osc.frequency.exponentialRampToValueAtTime(Math.max(20, freq * 0.15), this.ctx.currentTime + duration);
           }
           gain.gain.setValueAtTime(vol, this.ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
@@ -321,51 +517,56 @@
           gain.connect(this.ctx.destination);
           osc.start();
           osc.stop(this.ctx.currentTime + duration);
-        } catch(e) {}
+        } catch (e) {}
       },
-      slash() { this.tone(680, 'sawtooth', 0.12, 0.35, true); },
-      gem() {
-        this.tone(900, 'sine', 0.08, 0.2, false);
-        setTimeout(() => this.tone(1400, 'sine', 0.12, 0.2, false), 60);
-      },
-      dash() { this.tone(480, 'sawtooth', 0.2, 0.3, true); },
-      hit() { this.tone(150, 'square', 0.16, 0.4, true); },
-      kill() { this.tone(110, 'sawtooth', 0.35, 0.5, true); },
+      slash() { this.play(720, 'sawtooth', 0.12, 0.3, true); },
+      dash() { this.play(450, 'sawtooth', 0.18, 0.35, true); },
+      hit() { this.play(160, 'square', 0.15, 0.35, true); },
+      kill() { this.play(110, 'sawtooth', 0.28, 0.45, true); },
       bombPlant() {
-        this.tone(300, 'sine', 0.1, 0.3, false);
-        setTimeout(() => this.tone(600, 'sine', 0.15, 0.3, false), 80);
+        this.play(350, 'sine', 0.08, 0.3, false);
+        setTimeout(() => this.play(700, 'sine', 0.12, 0.3, false), 70);
       },
-      nukeBoom() {
-        this.tone(70, 'sawtooth', 0.6, 0.7, true);
+      nukeBoom() { this.play(60, 'sawtooth', 0.65, 0.75, true); },
+      pickup() {
+        this.play(880, 'sine', 0.08, 0.2, false);
+        setTimeout(() => this.play(1320, 'sine', 0.12, 0.2, false), 60);
+      },
+      bossRoar() {
+        this.play(85, 'sawtooth', 0.8, 0.6, true);
+        setTimeout(() => this.play(65, 'square', 0.8, 0.5, true), 120);
       },
       win() {
-        [440, 554, 659, 880].forEach((f, i) => {
-          setTimeout(() => this.tone(f, 'triangle', 0.14, 0.25, false), i * 70);
+        [440, 554, 659, 880, 1108].forEach((f, i) => {
+          setTimeout(() => this.play(f, 'triangle', 0.15, 0.25, false), i * 70);
         });
       },
       over() {
-        [350, 280, 200, 120].forEach((f, i) => {
-          setTimeout(() => this.tone(f, 'sawtooth', 0.25, 0.3, true), i * 140);
+        [320, 240, 180, 100].forEach((f, i) => {
+          setTimeout(() => this.play(f, 'sawtooth', 0.22, 0.3, true), i * 140);
         });
       }
     };
 
     /* ==========================================================================
-       تهيئة الكانفاس والكاميرا
+       3. إعداد الكانفاس والكاميرا والاهتزاز البصري
        ========================================================================== */
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    function resize() {
+    function resizeCanvas() {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
     }
-    window.addEventListener('resize', resize);
-    resize();
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let enableScreenShake = true;
+    let screenShakeAmount = 0;
 
     const camera = {
       x: 0,
@@ -377,7 +578,82 @@
     };
 
     /* ==========================================================================
-       نظام اللمس المتعدد المطور للجويستيك المرفوع
+       4. نظام تخزين وحفظ التقدم (LocalStorage)
+       ========================================================================== */
+    const Storage = {
+      KEY: 'cyber_arena_save_v1',
+      data: {
+        maxUnlockedStage: 1,
+        currentStage: 1,
+        totalScore: 0,
+        stagesProgress: {} // { stageId: { completed: true, highscore: 0 } }
+      },
+      init() {
+        const saved = localStorage.getItem(this.KEY);
+        if (saved) {
+          try {
+            this.data = JSON.parse(saved);
+          } catch(e) {}
+        }
+      },
+      save() {
+        localStorage.setItem(this.KEY, JSON.stringify(this.data));
+      },
+      isUnlocked(stageId) {
+        return stageId <= (this.data.maxUnlockedStage || 1);
+      },
+      completeStage(stageId, score) {
+        if (!this.data.stagesProgress[stageId]) {
+          this.data.stagesProgress[stageId] = { completed: true, highscore: score };
+        } else {
+          this.data.stagesProgress[stageId].completed = true;
+          this.data.stagesProgress[stageId].highscore = Math.max(this.data.stagesProgress[stageId].highscore, score);
+        }
+        if (stageId >= this.data.maxUnlockedStage && stageId < 30) {
+          this.data.maxUnlockedStage = stageId + 1;
+        }
+        this.data.currentStage = Math.min(30, stageId + 1);
+        this.save();
+      }
+    };
+    Storage.init();
+
+    /* ==========================================================================
+       5. إعداد 30 مرحلة متنوعة كلياً بأهداف وزعماء وأجواء مختلفة
+       ========================================================================== */
+    const STAGES_CONFIG = [];
+    const ENVIRONMENTS = ['ruins', 'cybercore', 'biolab', 'citadel'];
+
+    for (let i = 1; i <= 30; i++) {
+      const isBoss = (i % 5 === 0);
+      const envIndex = Math.floor((i - 1) / 8) % ENVIRONMENTS.length;
+      const targetScore = 500 + (i * 350) + (isBoss ? 500 : 0);
+      let name = `القطاع ${i}: `;
+      if (isBoss) {
+        name += `معقل الزعيم الفضائي ${Math.floor(i / 5)}`;
+      } else if (envIndex === 0) {
+        name += `أطلال نيون مدمرة`;
+      } else if (envIndex === 1) {
+        name += `مفاعل السايبر كابوس`;
+      } else if (envIndex === 2) {
+        name += `المختبر الموبوء`;
+      } else {
+        name += `قلعة الهلاك`;
+      }
+
+      STAGES_CONFIG.push({
+        id: i,
+        name: name,
+        targetScore: targetScore,
+        hasBoss: isBoss,
+        env: ENVIRONMENTS[envIndex],
+        spawnCap: Math.min(65, 20 + i * 2),
+        spawnRate: Math.max(16, 65 - Math.floor(i * 1.5))
+      });
+    }
+
+    /* ==========================================================================
+       6. نظام اللمس المتعدد المطور للجويستيك المرفوع
        ========================================================================== */
     const joystickContainer = document.getElementById('joystickContainer');
     const joystickKnob = document.getElementById('joystickKnob');
@@ -385,7 +661,7 @@
     let joyInput = { x: 0, y: 0 };
     const maxRadius = 45;
 
-    function getTouchById(touches, id) {
+    function getTouch(touches, id) {
       for (let i = 0; i < touches.length; i++) {
         if (touches[i].identifier === id) return touches[i];
       }
@@ -395,36 +671,35 @@
     joystickContainer.addEventListener('touchstart', (e) => {
       e.preventDefault();
       if (joyTouchId === null) {
-        const touch = e.changedTouches[0];
-        joyTouchId = touch.identifier;
-        updateJoystickPosition(touch.clientX, touch.clientY);
+        const t = e.changedTouches[0];
+        joyTouchId = t.identifier;
+        moveJoystick(t.clientX, t.clientY);
       }
     }, { passive: false });
 
     window.addEventListener('touchmove', (e) => {
       if (joyTouchId !== null) {
-        const touch = getTouchById(e.touches, joyTouchId);
-        if (touch) updateJoystickPosition(touch.clientX, touch.clientY);
+        const t = getTouch(e.touches, joyTouchId);
+        if (t) moveJoystick(t.clientX, t.clientY);
       }
     }, { passive: false });
 
-    function updateJoystickPosition(touchX, touchY) {
+    function moveJoystick(clientX, clientY) {
       const rect = joystickContainer.getBoundingClientRect();
-      let dx = touchX - (rect.left + rect.width / 2);
-      let dy = touchY - (rect.top + rect.height / 2);
+      let dx = clientX - (rect.left + rect.width / 2);
+      let dy = clientY - (rect.top + rect.height / 2);
       const dist = Math.hypot(dx, dy);
 
       if (dist > maxRadius) {
         dx = (dx / dist) * maxRadius;
         dy = (dy / dist) * maxRadius;
       }
-
-      joystickKnob.style.transform = `translate(${dx}px,${dy}px)`;
+      joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
       joyInput.x = dx / maxRadius;
       joyInput.y = dy / maxRadius;
     }
 
-    function endJoystickTouch(e) {
+    function releaseJoystick(e) {
       for (let i = 0; i < e.changedTouches.length; i++) {
         if (e.changedTouches[i].identifier === joyTouchId) {
           joyTouchId = null;
@@ -434,78 +709,31 @@
         }
       }
     }
-    window.addEventListener('touchend', endJoystickTouch);
-    window.addEventListener('touchcancel', endJoystickTouch);
+    window.addEventListener('touchend', releaseJoystick);
+    window.addEventListener('touchcancel', releaseJoystick);
 
     /* ==========================================================================
-       أنظمة الأسلحة والمقاتلين والمراحل
+       7. إعدادات الأبطال والأسلحة
        ========================================================================== */
-    const HERO_PROFILES = {
-      ninja: { name: 'النينجا', color: '#06b6d4', accent: '#22d3ee', speed: 5.6, maxHp: 100, dashCooldown: 80 },
-      mech: { name: 'السايبورغ', color: '#fbbf24', accent: '#f59e0b', speed: 4.5, maxHp: 165, dashCooldown: 120 },
-      trooper: { name: 'الكوماندوز', color: '#ec4899', accent: '#f43f5e', speed: 5.1, maxHp: 130, dashCooldown: 100 }
+    const HEROES = {
+      ninja: { name: 'النينجا', color: '#06b6d4', accent: '#22d3ee', speed: 5.8, maxHp: 100, dashCd: 75 },
+      mech: { name: 'السايبورغ', color: '#fbbf24', accent: '#f59e0b', speed: 4.6, maxHp: 170, dashCd: 110 },
+      trooper: { name: 'الكوماندوز', color: '#ec4899', accent: '#f43f5e', speed: 5.2, maxHp: 130, dashCd: 90 }
     };
 
-    const WEAPON_PROFILES = {
-      katana: { name: 'كاتانا نيون', range: 85, arc: Math.PI * 0.95, damage: 65, icon: '🗡️' },
-      hammer: { name: 'مطرقة صدمة', range: 105, arc: Math.PI * 1.6, damage: 100, icon: '🔨' },
-      spear: { name: 'رمح ليزري', range: 135, arc: Math.PI * 0.65, damage: 85, icon: '⚡' }
+    const WEAPONS = {
+      katana: { name: 'كاتانا نيون', range: 88, arc: Math.PI * 0.95, baseDamage: 65 },
+      hammer: { name: 'مطرقة صدمة', range: 105, arc: Math.PI * 1.6, baseDamage: 110 },
+      spear: { name: 'رمح ليزر', range: 140, arc: Math.PI * 0.65, baseDamage: 90 }
     };
 
-    let selectedHeroKey = 'ninja';
-    let selectedWeaponKey = 'katana';
-
-    // تعريف أهداف المراحل وصعوبتها
-    const STAGE_TARGETS = [600, 1500, 2600, 4000, 6000, 9000];
+    let selectedHero = 'ninja';
+    let selectedWeapon = 'katana';
 
     /* ==========================================================================
-       كلاس القنبلة الخداعية الذكية (Decoy Bomb)
+       8. كلاس اللاعب المحارب بالأطراف والأسلحة والتعزيزات
        ========================================================================== */
-    class DecoyBomb {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.radius = 20;
-        this.pulse = 0;
-        this.active = true;
-      }
-      update() {
-        this.pulse += 0.12;
-      }
-      draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-
-        // حلقة نيون نابضة تخدع الوحوش
-        const glow = Math.sin(this.pulse) * 12;
-        ctx.strokeStyle = '#f97316';
-        ctx.shadowColor = '#ea580c';
-        ctx.shadowBlur = 18 + glow;
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(0, 0, this.radius + 8 + glow * 0.5, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // جسم القنبلة
-        ctx.fillStyle = '#1c1917';
-        ctx.beginPath();
-        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // فتيل وضوء أحمر متقطع
-        ctx.fillStyle = Math.sin(this.pulse * 2) > 0 ? '#ef4444' : '#ffffff';
-        ctx.beginPath();
-        ctx.arc(0, 0, 8, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-      }
-    }
-
-    /* ==========================================================================
-       كلاس اللاعب المحارب
-       ========================================================================== */
-    class GamePlayer {
+    class HeroPlayer {
       constructor(heroCfg, weaponCfg) {
         this.x = 0;
         this.y = 0;
@@ -514,8 +742,8 @@
         this.hp = heroCfg.maxHp;
         this.color = heroCfg.color;
         this.accent = heroCfg.accent;
-        this.dashCooldownTime = heroCfg.dashCooldown;
-        this.dashCooldown = 0;
+        this.dashCdTime = heroCfg.dashCd;
+        this.dashCd = 0;
         this.isDashing = false;
         this.dashTimer = 0;
         this.dashVx = 0;
@@ -529,10 +757,15 @@
         this.angle = 0;
         this.walkCycle = 0;
         this.isMoving = false;
-        this.dustTimer = 0;
+
+        // تعزيزات مؤقتة
+        this.hasShield = false;
+        this.shieldTimer = 0;
+        this.damageBuffTimer = 0;
+        this.speedBuffTimer = 0;
       }
 
-      performDash() {
+      dash() {
         let vx = joyInput.x;
         let vy = joyInput.y;
         if (vx === 0 && vy === 0) {
@@ -547,45 +780,56 @@
         this.dashTimer = 12;
         this.dashVx = vx * 18;
         this.dashVy = vy * 18;
-        this.dashCooldown = this.dashCooldownTime;
-        SoundFx.dash();
-        addShockwave(this.x, this.y, this.color);
+        this.dashCd = this.dashCdTime;
+        SoundEngine.dash();
+        triggerScreenShake(4);
+        spawnExplosion(this.x, this.y, this.color, 12);
       }
 
-      performAttack() {
+      attack() {
         if (this.isAttacking) return;
         this.isAttacking = true;
         this.attackTimer = 14;
         this.attackSwing = -this.weapon.arc / 2;
-        SoundFx.slash();
+        SoundEngine.slash();
 
-        // فحص إصابة الأعداء بنطاق السلاح
+        const currentDmg = this.weapon.baseDamage * (this.damageBuffTimer > 0 ? 2 : 1);
+
+        // إصابة الأعداء داخل نطاق السلاح
         for (let i = enemies.length - 1; i >= 0; i--) {
           const em = enemies[i];
-          const dist = Math.hypot(em.x - this.x, em.y - this.y);
-          if (dist <= this.weapon.range) {
+          if (em.dead) continue;
+          const d = Math.hypot(em.x - this.x, em.y - this.y);
+          if (d <= this.weapon.range + em.radius) {
             const angToEnemy = Math.atan2(em.y - this.y, em.x - this.x);
             let diff = angToEnemy - this.angle;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
 
             if (Math.abs(diff) <= this.weapon.arc / 1.7) {
-              em.hp -= this.weapon.damage;
-              SoundFx.hit();
-              addShockwave(em.x, em.y, '#ffffff', 6);
-              if (em.hp <= 0) {
-                SoundFx.kill();
-                addShockwave(em.x, em.y, em.color, 16);
-                addScore(em.scoreValue);
-                enemies.splice(i, 1);
-              }
+              em.takeDamage(currentDmg);
+              spawnExplosion(em.x, em.y, '#ffffff', 5);
+              SoundEngine.hit();
             }
           }
         }
       }
 
       update() {
-        if (this.dashCooldown > 0) this.dashCooldown--;
+        if (this.dashCd > 0) this.dashCd--;
+
+        // إدارة التعزيزات
+        if (this.shieldTimer > 0) {
+          this.shieldTimer--;
+          if (this.shieldTimer <= 0) this.hasShield = false;
+        }
+        if (this.damageBuffTimer > 0) {
+          this.damageBuffTimer--;
+          document.getElementById('buffIndicator').classList.remove('hidden');
+        } else {
+          document.getElementById('buffIndicator').classList.add('hidden');
+        }
+        if (this.speedBuffTimer > 0) this.speedBuffTimer--;
 
         if (this.isAttacking) {
           this.attackTimer--;
@@ -599,22 +843,21 @@
           this.dashTimer--;
           if (this.dashTimer <= 0) this.isDashing = false;
         } else {
+          let spd = this.speed * (this.speedBuffTimer > 0 ? 1.4 : 1);
           let mx = joyInput.x;
           let my = joyInput.y;
           const len = Math.hypot(mx, my);
           this.isMoving = len > 0.08;
 
           if (this.isMoving) {
-            mx = (mx / (len > 1 ? len : 1)) * this.speed;
-            my = (my / (len > 1 ? len : 1)) * this.speed;
+            mx = (mx / (len > 1 ? len : 1)) * spd;
+            my = (my / (len > 1 ? len : 1)) * spd;
             this.x += mx;
             this.y += my;
             this.angle = Math.atan2(my, mx);
             this.walkCycle += 0.22;
 
-            this.dustTimer++;
-            if (this.dustTimer > 4) {
-              this.dustTimer = 0;
+            if (Math.random() < 0.25) {
               spawnDust(this.x, this.y, this.color);
             }
           }
@@ -625,6 +868,19 @@
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle);
+
+        // درع طاقة محيطي ناصع
+        if (this.hasShield) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(0, 0, 32, 0, Math.PI * 2);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 3;
+          ctx.shadowColor = '#38bdf8';
+          ctx.shadowBlur = 18;
+          ctx.stroke();
+          ctx.restore();
+        }
 
         const legSwing = Math.sin(this.walkCycle) * 10;
         // رسم الرجلين
@@ -641,7 +897,7 @@
         ctx.fill();
         ctx.stroke();
 
-        // الجسم
+        // الجسم والدرع
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         ctx.roundRect(-14, -12, 22, 24, 6);
@@ -652,13 +908,14 @@
         ctx.shadowBlur = 12;
         ctx.stroke();
 
-        // اليدين وحركة السلاح
+        // اليد الخلفية
         const armSwing = Math.cos(this.walkCycle) * 6;
         ctx.fillStyle = this.accent;
         ctx.beginPath();
         ctx.arc(4, -15 - armSwing, 5, 0, Math.PI * 2);
         ctx.fill();
 
+        // يد السلاح مع أنيميشن الضربة
         ctx.save();
         let weaponRot = this.isAttacking ? this.attackSwing : 0;
         ctx.translate(8, 14);
@@ -668,20 +925,20 @@
         ctx.arc(0, 0, 5.5, 0, Math.PI * 2);
         ctx.fill();
 
-        // رسم السلاح المختار
+        // رسم السلاح المميز
         ctx.strokeStyle = '#ffffff';
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 16;
         ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        if (selectedWeaponKey === 'hammer') {
+        if (selectedWeapon === 'hammer') {
           ctx.lineTo(24, 0);
           ctx.stroke();
           ctx.fillStyle = this.accent;
           ctx.fillRect(22, -8, 10, 16);
-        } else if (selectedWeaponKey === 'spear') {
-          ctx.lineTo(34, 0);
+        } else if (selectedWeapon === 'spear') {
+          ctx.lineTo(36, 0);
           ctx.stroke();
         } else {
           ctx.lineTo(28, 0);
@@ -689,7 +946,7 @@
         }
         ctx.restore();
 
-        // الرأس
+        // الرأس والخوذة
         ctx.fillStyle = '#111827';
         ctx.beginPath();
         ctx.arc(0, 0, 11, 0, Math.PI * 2);
@@ -698,7 +955,7 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // القناع
+        // قناع العين المضيء
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 10;
@@ -708,7 +965,7 @@
 
         ctx.restore();
 
-        // أثر قوس الضربة
+        // قوس الضربة بالسلاح
         if (this.isAttacking) {
           ctx.save();
           ctx.translate(this.x, this.y);
@@ -726,95 +983,228 @@
     }
 
     /* ==========================================================================
-       كلاس الوحوش المتنوعة مع الذكاء الخداعي
+       9. كلاس القنبلة الذكية الخداعية (Decoy Bomb)
        ========================================================================== */
-    class VarietyEnemy {
-      constructor(px, py, stage) {
-        const ang = Math.random() * Math.PI * 2;
-        const d = Math.max(width, height) * 0.7 + Math.random() * 200;
-        this.x = px + Math.cos(ang) * d;
-        this.y = py + Math.sin(ang) * d;
-
-        const roll = Math.random();
-        if (roll > 0.75) {
-          // وحش متسلل سريع
-          this.speed = 3.8 + (stage * 0.15);
-          this.hp = 35 + (stage * 10);
-          this.dmg = 12;
-          this.color = '#a855f7';
-          this.radius = 16;
-          this.scoreValue = 160;
-        } else if (roll > 0.5 && stage >= 2) {
-          // عملاق تيتان مدرع
-          this.speed = 1.8 + (stage * 0.08);
-          this.hp = 130 + (stage * 30);
-          this.dmg = 32;
-          this.color = '#ea580c';
-          this.radius = 28;
-          this.scoreValue = 250;
-        } else if (roll > 0.35 && stage >= 3) {
-          // كائن نيون سام
-          this.speed = 3.2 + (stage * 0.1);
-          this.hp = 70 + (stage * 15);
-          this.dmg = 22;
-          this.color = '#10b981';
-          this.radius = 21;
-          this.scoreValue = 200;
-        } else {
-          // ملاحق عادي
-          this.speed = 2.6 + (stage * 0.12);
-          this.hp = 55 + (stage * 12);
-          this.dmg = 18;
-          this.color = '#f43f5e';
-          this.radius = 19;
-          this.scoreValue = 130;
-        }
-        this.angle = 0;
-        this.walkAnim = Math.random() * 10;
+    class DecoyBomb {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 20;
+        this.pulse = 0;
       }
-
-      update(playerTarget, activeBomb) {
-        // إذا وُجدت قنبلة خداعية، يذهب الوحش إليها ظناً أنها اللاعب!
-        const target = activeBomb ? activeBomb : playerTarget;
-        const dx = target.x - this.x;
-        const dy = target.y - this.y;
-        this.angle = Math.atan2(dy, dx);
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-        this.walkAnim += 0.22;
+      update() {
+        this.pulse += 0.12;
       }
-
       draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
+        const glow = Math.sin(this.pulse) * 12;
+        ctx.strokeStyle = '#f97316';
+        ctx.shadowColor = '#ea580c';
+        ctx.shadowBlur = 18 + glow;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius + 8 + glow * 0.5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = Math.sin(this.pulse * 2) > 0 ? '#ef4444' : '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    /* ==========================================================================
+       10. كلاس الوحوش والزعماء بأنواعهم وقيم نقاطهم الصارمة
+       ========================================================================== */
+    class GameEnemy {
+      constructor(px, py, stage, typeOverride = null) {
+        const ang = Math.random() * Math.PI * 2;
+        const dist = Math.max(width, height) * 0.65 + Math.random() * 200;
+        this.x = px + Math.cos(ang) * dist;
+        this.y = py + Math.sin(ang) * dist;
+        this.dead = false;
+
+        // أنواع الوحوش وقيم النقاط الدقيقة
+        const types = ['crawler', 'fast', 'armored', 'brute', 'ranger', 'plasma'];
+        this.type = typeOverride || types[Math.floor(Math.random() * types.length)];
+
+        this.walkAnim = Math.random() * 10;
+        this.shootCd = 60 + Math.random() * 60;
+
+        if (this.type === 'crawler') {
+          // وحش عادي = 20 نقطة
+          this.speed = 2.6 + (stage * 0.08);
+          this.hp = 50 + (stage * 8);
+          this.maxHp = this.hp;
+          this.dmg = 16;
+          this.radius = 18;
+          this.color = '#f43f5e';
+          this.scorePoints = 20;
+        } else if (this.type === 'fast') {
+          // وحش سريع = 25 نقطة
+          this.speed = 4.0 + (stage * 0.1);
+          this.hp = 35 + (stage * 6);
+          this.maxHp = this.hp;
+          this.dmg = 12;
+          this.radius = 15;
+          this.color = '#a855f7';
+          this.scorePoints = 25;
+        } else if (this.type === 'armored') {
+          // وحش مدرع = 40 نقطة
+          this.speed = 1.9 + (stage * 0.05);
+          this.hp = 120 + (stage * 20);
+          this.maxHp = this.hp;
+          this.dmg = 24;
+          this.radius = 24;
+          this.color = '#0284c7';
+          this.scorePoints = 40;
+        } else if (this.type === 'brute') {
+          // وحش ضخم = 50 نقطة
+          this.speed = 2.1 + (stage * 0.06);
+          this.hp = 180 + (stage * 28);
+          this.maxHp = this.hp;
+          this.dmg = 34;
+          this.radius = 28;
+          this.color = '#ea580c';
+          this.scorePoints = 50;
+        } else if (this.type === 'ranger') {
+          // وحش بعيد المدى = 35 نقطة
+          this.speed = 2.2 + (stage * 0.06);
+          this.hp = 45 + (stage * 8);
+          this.maxHp = this.hp;
+          this.dmg = 14;
+          this.radius = 17;
+          this.color = '#10b981';
+          this.scorePoints = 35;
+        } else if (this.type === 'plasma') {
+          // وحش نادر انتحاري = 60 نقطة
+          this.speed = 4.4 + (stage * 0.08);
+          this.hp = 30 + (stage * 5);
+          this.maxHp = this.hp;
+          this.dmg = 45;
+          this.radius = 16;
+          this.color = '#eab308';
+          this.scorePoints = 60;
+        } else if (this.type === 'boss') {
+          // الزعيم العملاق = 200 نقطة
+          this.speed = 2.0 + (stage * 0.04);
+          this.hp = 900 + (stage * 180);
+          this.maxHp = this.hp;
+          this.dmg = 45;
+          this.radius = 45;
+          this.color = '#e11d48';
+          this.scorePoints = 200;
+        }
+      }
+
+      takeDamage(amount) {
+        if (this.dead) return;
+        this.hp -= amount;
+        if (this.hp <= 0) {
+          this.hp = 0;
+          this.die();
+        }
+      }
+
+      die() {
+        if (this.dead) return;
+        this.dead = true;
+        SoundEngine.kill();
+        spawnExplosion(this.x, this.y, this.color, this.type === 'boss' ? 45 : 16);
+        addScore(this.scorePoints);
+        totalKills++;
+
+        // إسقاط غنائم ومكافآت عشوائية
+        const roll = Math.random();
+        if (roll < 0.25 || this.type === 'boss') {
+          spawnLootDrop(this.x, this.y);
+        }
+      }
+
+      update(playerTarget, decoyTarget) {
+        if (this.dead) return;
+
+        // الذكاء الاصطناعي: الانجذاب للقنبلة الخداعية أولاً
+        const target = decoyTarget ? decoyTarget : playerTarget;
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        // هجوم الوحوش بعيدة المدى (Ranger)
+        if (this.type === 'ranger') {
+          if (dist > 220) {
+            this.x += (dx / dist) * this.speed;
+            this.y += (dy / dist) * this.speed;
+          } else if (dist < 150) {
+            this.x -= (dx / dist) * (this.speed * 0.8);
+            this.y -= (dy / dist) * (this.speed * 0.8);
+          }
+          this.shootCd--;
+          if (this.shootCd <= 0 && dist < 450) {
+            this.shootCd = 90;
+            enemyProjectiles.push(new EnemyBullet(this.x, this.y, dx / dist, dy / dist));
+          }
+        } else if (this.type === 'boss') {
+          // الزعيم يتحرك ويطلق نيران دائرية
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
+          this.shootCd--;
+          if (this.shootCd <= 0) {
+            this.shootCd = 80;
+            for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+              enemyProjectiles.push(new EnemyBullet(this.x, this.y, Math.cos(a), Math.sin(a), 4.5, '#ef4444'));
+            }
+          }
+        } else {
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
+        }
+
+        this.walkAnim += 0.2;
+      }
+
+      draw() {
+        if (this.dead) return;
+        ctx.save();
+        ctx.translate(this.x, this.y);
 
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 12;
 
-        const clawSwing = Math.sin(this.walkAnim) * 8;
+        const claw = Math.sin(this.walkAnim) * 8;
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 3;
+        ctx.lineWidth = this.type === 'boss' ? 5 : 3;
+
+        // مخالب وأرجل الوحش
         ctx.beginPath();
-        ctx.moveTo(0, 12);
-        ctx.lineTo(16, 18 + clawSwing);
+        ctx.moveTo(0, this.radius * 0.6);
+        ctx.lineTo(this.radius * 0.9, this.radius + claw);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(0, -12);
-        ctx.lineTo(16, -18 - clawSwing);
+        ctx.moveTo(0, -this.radius * 0.6);
+        ctx.lineTo(this.radius * 0.9, -this.radius - claw);
         ctx.stroke();
 
+        // جسم الوحش
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
 
+        // عيون الوحش الحمراء المتوهجة
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(this.radius * 0.4, -5, 3.5, 0, Math.PI * 2);
-        ctx.arc(this.radius * 0.4, 5, 3.5, 0, Math.PI * 2);
+        ctx.arc(this.radius * 0.35, -this.radius * 0.25, this.radius * 0.18, 0, Math.PI * 2);
+        ctx.arc(this.radius * 0.35, this.radius * 0.25, this.radius * 0.18, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();
@@ -822,268 +1212,402 @@
     }
 
     /* ==========================================================================
-       الجواهر والجزيئات
+       11. مقذوفات الأعداء والغنائم (Projectiles & Loot Drops)
        ========================================================================== */
-    class StageGem {
-      constructor(px, py) {
-        const a = Math.random() * Math.PI * 2;
-        const d = Math.random() * 600 + 90;
-        this.x = px + Math.cos(a) * d;
-        this.y = py + Math.sin(a) * d;
-        this.pulse = Math.random() * 5;
+    class EnemyBullet {
+      constructor(x, y, vx, vy, speed = 5.2, color = '#10b981') {
+        this.x = x;
+        this.y = y;
+        this.vx = vx * speed;
+        this.vy = vy * speed;
+        this.color = color;
+        this.life = 140;
       }
-      update() { this.pulse += 0.08; }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life--;
+      }
       draw() {
         ctx.save();
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 14 + Math.sin(this.pulse) * 6;
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
     }
 
+    class LootItem {
+      constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type; // 'hp', 'shield', 'damage', 'speed', 'gem'
+        this.life = 600;
+        this.pulse = 0;
+      }
+      update() {
+        this.life--;
+        this.pulse += 0.08;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        const glow = Math.sin(this.pulse) * 4;
+        let icon = '💎';
+        let col = '#38bdf8';
+        if (this.type === 'hp') { icon = '❤️'; col = '#f43f5e'; }
+        if (this.type === 'shield') { icon = '🛡️'; col = '#0ea5e9'; }
+        if (this.type === 'damage') { icon = '🔥'; col = '#f97316'; }
+        if (this.type === 'speed') { icon = '⚡'; col = '#eab308'; }
+
+        ctx.shadowColor = col;
+        ctx.shadowBlur = 12 + glow;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(icon, 0, 1);
+        ctx.restore();
+      }
+    }
+
+    function spawnLootDrop(x, y) {
+      const types = ['hp', 'shield', 'damage', 'speed', 'gem'];
+      const picked = types[Math.floor(Math.random() * types.length)];
+      lootItems.push(new LootItem(x, y, picked));
+    }
+
+    /* ==========================================================================
+       12. الجسيمات والتأثيرات البصرية المتطورة
+       ========================================================================== */
     let particles = [];
-    function addShockwave(x, y, color, count = 16) {
+    let bgParticles = [];
+
+    // توليد جزيئات الضباب والدخان الخلفي
+    for (let i = 0; i < 40; i++) {
+      bgParticles.push({
+        x: Math.random() * 2000 - 1000,
+        y: Math.random() * 2000 - 1000,
+        size: Math.random() * 40 + 20,
+        alpha: Math.random() * 0.15 + 0.05,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4
+      });
+    }
+
+    function spawnExplosion(x, y, color, count = 18) {
       for (let i = 0; i < count; i++) {
-        const ang = Math.random() * Math.PI * 2;
-        const spd = Math.random() * 5 + 2;
+        const a = Math.random() * Math.PI * 2;
+        const spd = Math.random() * 6 + 2;
         particles.push({
           x, y,
-          vx: Math.cos(ang) * spd,
-          vy: Math.sin(ang) * spd,
+          vx: Math.cos(a) * spd,
+          vy: Math.sin(a) * spd,
           color,
           alpha: 1,
-          size: Math.random() * 3.5 + 2
+          size: Math.random() * 4 + 2
         });
       }
     }
 
     function spawnDust(x, y, color) {
       particles.push({
-        x: x + (Math.random() - 0.5) * 8,
-        y: y + (Math.random() - 0.5) * 8,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
+        x: x + (Math.random() - 0.5) * 10,
+        y: y + (Math.random() - 0.5) * 10,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
         color,
-        alpha: 0.6,
-        size: Math.random() * 4 + 2
+        alpha: 0.5,
+        size: Math.random() * 3 + 1
       });
     }
 
+    function triggerScreenShake(amount) {
+      if (!enableScreenShake) return;
+      screenShakeAmount = Math.max(screenShakeAmount, amount);
+    }
+
     /* ==========================================================================
-       إدارة منطق اللعبة والمراحل والقنابل
+       13. حالة المعركة والمراحل وإدارة اللعبة
        ========================================================================== */
     let player;
     let enemies = [];
-    let gems = [];
+    let enemyProjectiles = [];
+    let lootItems = [];
     let currentBomb = null;
     let bombsCount = 5;
-    let currentStage = 1;
+
+    let activeStageIndex = 0;
     let stageScore = 0;
     let totalScore = 0;
-    let gameRunning = false;
-    let enemySpawner = 0;
+    let totalKills = 0;
+    let stageStartTime = 0;
+    let isGameRunning = false;
+    let isPaused = false;
+    let spawnTimer = 0;
+    let currentBoss = null;
 
     function addScore(pts) {
-      totalScore += pts;
       stageScore += pts;
-      checkStageProgress();
+      totalScore += pts;
+      updateHudScore();
+      checkStageCompletion();
     }
 
-    function checkStageProgress() {
-      const target = STAGE_TARGETS[currentStage - 1] || 10000;
-      const pct = Math.min(100, (stageScore / target) * 100);
+    function updateHudScore() {
+      const cfg = STAGES_CONFIG[activeStageIndex];
+      document.getElementById('scoreVal').innerText = totalScore;
+      document.getElementById('killsVal').innerText = totalKills;
+      document.getElementById('stageTargetText').innerText = `${stageScore} / ${cfg.targetScore}`;
+      const pct = Math.min(100, (stageScore / cfg.targetScore) * 100);
       document.getElementById('stageProgressBar').style.width = `${pct}%`;
-      document.getElementById('stageTargetText').innerText = `${stageScore} /${target}`;
+    }
 
-      if (stageScore >= target) {
-        completeCurrentStage();
+    function checkStageCompletion() {
+      const cfg = STAGES_CONFIG[activeStageIndex];
+      if (stageScore >= cfg.targetScore && (!cfg.hasBoss || (currentBoss && currentBoss.dead))) {
+        completeStageVictory();
       }
     }
 
-    function completeCurrentStage() {
-      gameRunning = false;
-      SoundFx.win();
-      document.getElementById('stageClearDesc').innerText = `أنهيت المرحلة ${currentStage} بنجاح ساحق! النقاط المستهدفة تم تحقيقها.`;
+    function completeStageVictory() {
+      isGameRunning = false;
+      SoundEngine.win();
+      Storage.completeStage(activeStageIndex + 1, stageScore);
+
+      const elapsedSec = Math.floor((Date.now() - stageStartTime) / 1000);
+      const m = Math.floor(elapsedSec / 60).toString().padStart(2, '0');
+      const s = (elapsedSec % 60).toString().padStart(2, '0');
+
+      document.getElementById('clearScoreVal').innerText = stageScore;
+      document.getElementById('clearKillsVal').innerText = totalKills;
+      document.getElementById('clearTimeVal').innerText = `${m}:${s}`;
       document.getElementById('stageClearScreen').classList.remove('hidden');
     }
 
-    function proceedToNextStage() {
-      currentStage++;
+    function loadAndStartStage(stageNum) {
+      activeStageIndex = stageNum - 1;
+      const cfg = STAGES_CONFIG[activeStageIndex];
       stageScore = 0;
-      bombsCount = 5; // تجديد القنابل لكل مرحلة
-      currentBomb = null;
-      updateBombButtonState();
-
-      enemies = [];
-      gems = [];
-      for (let i = 0; i < 9; i++) gems.push(new StageGem(player.x, player.y));
-
-      document.getElementById('stageNumVal').innerText = currentStage;
-      checkStageProgress();
-      document.getElementById('stageClearScreen').classList.add('hidden');
-      gameRunning = true;
-    }
-
-    function startNewGame() {
-      const hero = HERO_PROFILES[selectedHeroKey];
-      const weapon = WEAPON_PROFILES[selectedWeaponKey];
-      player = new GamePlayer(hero, weapon);
-
-      currentStage = 1;
-      stageScore = 0;
-      totalScore = 0;
       bombsCount = 5;
       currentBomb = null;
-      updateBombButtonState();
-
       enemies = [];
-      gems = [];
+      enemyProjectiles = [];
+      lootItems = [];
       particles = [];
-      gameRunning = true;
+      currentBoss = null;
 
-      for (let i = 0; i < 9; i++) gems.push(new StageGem(player.x, player.y));
+      const hero = HEROES[selectedHero];
+      const weapon = WEAPONS[selectedWeapon];
+      player = new HeroPlayer(hero, weapon);
 
-      document.getElementById('stageNumVal').innerText = currentStage;
-      checkStageProgress();
+      stageStartTime = Date.now();
+      isGameRunning = true;
+      isPaused = false;
+
+      // الزعيم إذا كانت المرحلة مرحلة زعيم
+      if (cfg.hasBoss) {
+        SoundEngine.bossRoar();
+        currentBoss = new GameEnemy(player.x, player.y, cfg.id, 'boss');
+        enemies.push(currentBoss);
+        document.getElementById('bossHud').classList.remove('hidden');
+        document.getElementById('bossName').innerText = `👹 ${cfg.name}`;
+      } else {
+        document.getElementById('bossHud').classList.add('hidden');
+      }
+
+      document.getElementById('stageNumVal').innerText = cfg.id;
+      updateHudScore();
+      updateBombBtn();
 
       document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('stagesModal').classList.add('hidden');
+      document.getElementById('stageClearScreen').classList.add('hidden');
       document.getElementById('lossScreen').classList.add('hidden');
       document.getElementById('hudBar').classList.remove('opacity-0');
       document.getElementById('controlsGroup').classList.remove('opacity-0');
     }
 
-    // إدارة زر القنبلة المزدوج (ازرع / فجّر)
-    const bombBtn = document.getElementById('bombBtn');
-    const bombBtnIcon = document.getElementById('bombBtnIcon');
-    const bombBtnLabel = document.getElementById('bombBtnLabel');
-
-    function updateBombButtonState() {
-      document.getElementById('bombsLeftVal').innerText = bombsCount;
+    function updateBombBtn() {
+      const icon = document.getElementById('bombBtnIcon');
+      const label = document.getElementById('bombBtnLabel');
+      const btn = document.getElementById('bombBtn');
       if (currentBomb) {
-        bombBtnIcon.innerText = '💥';
-        bombBtnLabel.innerText = 'تفجير!';
-        bombBtn.style.background = 'radial-gradient(circle at 35% 35%, #ef4444, #7f1d1d)';
+        icon.innerText = '💥';
+        label.innerText = 'تفجير!';
+        btn.style.background = 'radial-gradient(circle at 35% 35%, #ef4444, #7f1d1d)';
       } else {
-        bombBtnIcon.innerText = '💣';
-        bombBtnLabel.innerText = `ازرع (${bombsCount})`;
-        bombBtn.style.background = 'radial-gradient(circle at 35% 35%, #f97316, #c2410c)';
+        icon.innerText = '💣';
+        label.innerText = `ازرع (${bombsCount})`;
+        btn.style.background = 'radial-gradient(circle at 35% 35%, #f97316, #c2410c)';
       }
     }
 
-    function handleBombAction() {
-      if (!gameRunning || !player) return;
-
+    function handleBomb() {
+      if (!isGameRunning || !player) return;
       if (!currentBomb) {
-        // زرع قنبلة
         if (bombsCount > 0) {
           bombsCount--;
           currentBomb = new DecoyBomb(player.x, player.y);
-          SoundFx.bombPlant();
-          updateBombButtonState();
+          SoundEngine.bombPlant();
+          updateBombBtn();
         }
       } else {
-        // تفجير القنبلة وإبادة الوحوش حولها
-        SoundFx.nukeBoom();
-        addShockwave(currentBomb.x, currentBomb.y, '#f97316', 35);
-        addShockwave(currentBomb.x, currentBomb.y, '#ef4444', 25);
+        // تفجير هائل يدمر الأعداء في محيط 320 بكسل
+        SoundEngine.nukeBoom();
+        triggerScreenShake(14);
+        spawnExplosion(currentBomb.x, currentBomb.y, '#f97316', 40);
+        spawnExplosion(currentBomb.x, currentBomb.y, '#ef4444', 30);
 
-        // تدمير الأعداء في محيط 280 بكسل
         for (let i = enemies.length - 1; i >= 0; i--) {
           const em = enemies[i];
-          if (Math.hypot(em.x - currentBomb.x, em.y - currentBomb.y) < 280) {
-            addShockwave(em.x, em.y, em.color, 14);
-            addScore(em.scoreValue);
-            enemies.splice(i, 1);
+          if (em.dead) continue;
+          if (Math.hypot(em.x - currentBomb.x, em.y - currentBomb.y) < 320) {
+            em.takeDamage(220);
           }
         }
         currentBomb = null;
-        updateBombButtonState();
+        updateBombBtn();
       }
     }
 
-    bombBtn.addEventListener('touchstart', (e) => {
+    // ربط أزرار اللمس
+    document.getElementById('bombBtn').addEventListener('touchstart', (e) => {
       e.preventDefault();
-      handleBombAction();
+      handleBomb();
     }, { passive: false });
 
     document.getElementById('attackBtn').addEventListener('touchstart', (e) => {
       e.preventDefault();
-      if (gameRunning && player) player.performAttack();
+      if (isGameRunning && player) player.attack();
     }, { passive: false });
 
     document.getElementById('dashBtn').addEventListener('touchstart', (e) => {
       e.preventDefault();
-      if (gameRunning && player && player.dashCooldown <= 0) player.performDash();
+      if (isGameRunning && player && player.dashCd <= 0) player.dash();
     }, { passive: false });
 
-    function updateGameEngine() {
-      if (!gameRunning) return;
+    /* ==========================================================================
+       14. حلقة التحديث الفيزيائي (Physics & Game Loop)
+       ========================================================================== */
+    function updateGame() {
+      if (!isGameRunning || isPaused) return;
 
       player.update();
       camera.update(player.x, player.y);
 
       if (currentBomb) currentBomb.update();
 
-      // ظهور الأعداء
-      enemySpawner++;
-      const spawnRate = Math.max(22, 75 - (currentStage * 8));
-      if (enemySpawner > spawnRate && enemies.length < (20 + currentStage * 4)) {
-        enemySpawner = 0;
-        enemies.push(new VarietyEnemy(player.x, player.y, currentStage));
-      }
+      const stageCfg = STAGES_CONFIG[activeStageIndex];
 
-      // التقاط الجواهر
-      for (let i = gems.length - 1; i >= 0; i--) {
-        const g = gems[i];
-        g.update();
-        if (Math.hypot(player.x - g.x, player.y - g.y) < 32) {
-          gems.splice(i, 1);
-          addScore(100);
-          SoundFx.gem();
-          addShockwave(g.x, g.y, '#38bdf8');
-          gems.push(new StageGem(player.x, player.y));
+      // ظهور الأعداء بكثافة مضاعفة 3 مرات
+      spawnTimer++;
+      if (spawnTimer >= stageCfg.spawnRate && enemies.length < stageCfg.spawnCap) {
+        spawnTimer = 0;
+        // ظهور أعداء على شكل موجات
+        const batch = Math.min(3, stageCfg.spawnCap - enemies.length);
+        for (let b = 0; b < batch; b++) {
+          enemies.push(new GameEnemy(player.x, player.y, stageCfg.id));
         }
       }
 
-      // تصادم وتفاعل الوحوش
+      // تحديث الأعداء وتفاعلهم مع اللاعب
       for (let i = enemies.length - 1; i >= 0; i--) {
         const em = enemies[i];
+        if (em.dead) {
+          enemies.splice(i, 1);
+          continue;
+        }
+
         em.update(player, currentBomb);
 
         const d = Math.hypot(player.x - em.x, player.y - em.y);
         if (d < em.radius + 20) {
-          // هجوم الدش يدمر الوحش
+          // إذا كان اللاعب في حالة Dash فإنه يدمر العدو مباشرة
           if (player.isDashing) {
-            SoundFx.kill();
-            addShockwave(em.x, em.y, em.color);
-            addScore(em.scoreValue);
-            enemies.splice(i, 1);
+            em.takeDamage(150);
             continue;
           }
 
-          // تلقي ضرر
-          player.hp -= em.dmg;
-          SoundFx.hit();
-          addShockwave(player.x, player.y, '#f43f5e');
-          enemies.splice(i, 1);
+          // تلقي ضرر من الوحش
+          if (!player.hasShield) {
+            player.hp -= em.dmg;
+            SoundEngine.hit();
+            triggerScreenShake(7);
+            spawnExplosion(player.x, player.y, '#f43f5e', 8);
 
-          if (player.hp <= 0) {
-            player.hp = 0;
-            endGame();
-            return;
+            if (player.hp <= 0) {
+              player.hp = 0;
+              triggerGameOver();
+              return;
+            }
           }
         }
       }
 
-      // الجزيئات
+      // تحديث شريط الزعيم
+      if (currentBoss && !currentBoss.dead) {
+        const bPct = Math.max(0, (currentBoss.hp / currentBoss.maxHp) * 100);
+        document.getElementById('bossHpBar').style.width = `${bPct}%`;
+        document.getElementById('bossHpText').innerText = `${Math.ceil(bPct)}%`;
+      } else if (stageCfg.hasBoss) {
+        document.getElementById('bossHud').classList.add('hidden');
+      }
+
+      // تحديث مقذوفات الأعداء
+      for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
+        const p = enemyProjectiles[i];
+        p.update();
+        if (p.life <= 0) {
+          enemyProjectiles.splice(i, 1);
+          continue;
+        }
+        if (Math.hypot(p.x - player.x, p.y - player.y) < 22) {
+          if (!player.hasShield) {
+            player.hp -= 15;
+            SoundEngine.hit();
+            triggerScreenShake(5);
+            if (player.hp <= 0) {
+              player.hp = 0;
+              triggerGameOver();
+              return;
+            }
+          }
+          enemyProjectiles.splice(i, 1);
+        }
+      }
+
+      // التقاط الغنائم والتعزيزات
+      for (let i = lootItems.length - 1; i >= 0; i--) {
+        const item = lootItems[i];
+        item.update();
+        if (item.life <= 0) {
+          lootItems.splice(i, 1);
+          continue;
+        }
+        if (Math.hypot(item.x - player.x, item.y - player.y) < 32) {
+          SoundEngine.pickup();
+          if (item.type === 'hp') player.hp = Math.min(player.maxHp, player.hp + 40);
+          if (item.type === 'shield') { player.hasShield = true; player.shieldTimer = 450; }
+          if (item.type === 'damage') player.damageBuffTimer = 400;
+          if (item.type === 'speed') player.speedBuffTimer = 400;
+          if (item.type === 'gem') addScore(50);
+          spawnExplosion(item.x, item.y, '#ffffff', 10);
+          lootItems.splice(i, 1);
+        }
+      }
+
+      // الجسيمات
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
@@ -1096,35 +1620,59 @@
       const hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
       document.getElementById('hpBar').style.width = `${hpPct}%`;
       document.getElementById('hpText').innerText = `${Math.ceil(hpPct)}%`;
-      document.getElementById('scoreVal').innerText = totalScore;
+
+      const dashTxt = document.getElementById('dashState');
+      if (player.dashCd <= 0) {
+        dashTxt.innerText = 'جاهز!';
+        dashTxt.className = 'text-emerald-400 font-bold';
+      } else {
+        dashTxt.innerText = 'شحن...';
+        dashTxt.className = 'text-amber-400';
+      }
     }
 
-    function endGame() {
-      gameRunning = false;
-      SoundFx.over();
+    function triggerGameOver() {
+      isGameRunning = false;
+      SoundEngine.over();
       joyTouchId = null;
       joyInput = { x: 0, y: 0 };
       joystickKnob.style.transform = `translate(0px, 0px)`;
 
-      document.getElementById('finalScoreTxt').innerText = totalScore;
-      document.getElementById('finalStageTxt').innerText = currentStage;
+      document.getElementById('lossFinalScore').innerText = totalScore;
+      document.getElementById('lossFinalStage').innerText = activeStageIndex + 1;
       document.getElementById('lossScreen').classList.remove('hidden');
       document.getElementById('hudBar').classList.add('opacity-0');
       document.getElementById('controlsGroup').classList.add('opacity-0');
     }
 
     /* ==========================================================================
-       رسم الساحة المطورة ذات الإضاءة والشبكة الفضائية
+       15. رسم الخلفيات المستقبلية والمباني المهدمة والضباب
        ========================================================================== */
-    function drawArenaField() {
-      // سماء داكنة بنجوم عميقة
-      ctx.fillStyle = '#030511';
+    function drawFutureCityBackground() {
+      const env = STAGES_CONFIG[activeStageIndex].env;
+
+      // سماء ليلية سينمائية خاصة بكل بيئة
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      if (env === 'ruins') {
+        grad.addColorStop(0, '#040714');
+        grad.addColorStop(1, '#0c102b');
+      } else if (env === 'cybercore') {
+        grad.addColorStop(0, '#020d18');
+        grad.addColorStop(1, '#032035');
+      } else if (env === 'biolab') {
+        grad.addColorStop(0, '#0a0314');
+        grad.addColorStop(1, '#1a0628');
+      } else {
+        grad.addColorStop(0, '#100204');
+        grad.addColorStop(1, '#25040a');
+      }
+      ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
 
-      // رسم شبكة ليزرية متوهجة تتحرك مع الكاميرا
+      // شبكة نيون أرضية متحركة
       ctx.save();
       ctx.translate(-camera.x % 70, -camera.y % 70);
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.strokeStyle = env === 'citadel' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(56, 189, 248, 0.08)';
       ctx.lineWidth = 1;
       for (let x = -70; x <= width + 70; x += 70) {
         ctx.beginPath();
@@ -1140,19 +1688,54 @@
       }
       ctx.restore();
 
-      // حلقات توهج نيونية على الأرضية
+      // رسم مبانٍ محطمة وظلال مستقبلية في الأفق (Parallax Ruins)
       ctx.save();
-      ctx.translate(-camera.x, -camera.y);
-      ctx.strokeStyle = 'rgba(236, 72, 153, 0.15)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(0, 0, 450, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.translate(-camera.x * 0.2 % 300, 0);
+      ctx.fillStyle = 'rgba(5, 8, 20, 0.55)';
+      for (let i = -1; i < Math.ceil(width / 120) + 2; i++) {
+        const bx = i * 140;
+        const bh = 150 + ((i * 37) % 180);
+        ctx.fillRect(bx, height - bh, 100, bh);
+        // أضواء نيون في نوافذ الأبراج
+        ctx.fillStyle = (i % 2 === 0) ? 'rgba(6, 182, 212, 0.25)' : 'rgba(236, 72, 153, 0.25)';
+        ctx.fillRect(bx + 20, height - bh + 30, 8, 8);
+        ctx.fillRect(bx + 40, height - bh + 60, 8, 8);
+        ctx.fillStyle = 'rgba(5, 8, 20, 0.55)';
+      }
       ctx.restore();
+
+      // سحب الضباب والدخان المتحرك
+      bgParticles.forEach(bp => {
+        bp.x += bp.vx;
+        bp.y += bp.vy;
+        if (bp.x > 1000) bp.x = -1000;
+        if (bp.x < -1000) bp.x = 1000;
+        if (bp.y > 1000) bp.y = -1000;
+        if (bp.y < -1000) bp.y = 1000;
+
+        ctx.save();
+        ctx.translate(-camera.x * 0.4 + bp.x + width / 2, -camera.y * 0.4 + bp.y + height / 2);
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.03)';
+        ctx.beginPath();
+        ctx.arc(0, 0, bp.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
     }
 
-    function renderEngine() {
-      drawArenaField();
+    function render() {
+      ctx.save();
+
+      // تطبيق اهتزاز الشاشة
+      if (screenShakeAmount > 0) {
+        const sx = (Math.random() - 0.5) * screenShakeAmount;
+        const sy = (Math.random() - 0.5) * screenShakeAmount;
+        ctx.translate(sx, sy);
+        screenShakeAmount *= 0.88;
+        if (screenShakeAmount < 0.2) screenShakeAmount = 0;
+      }
+
+      drawFutureCityBackground();
 
       ctx.save();
       ctx.translate(-camera.x, -camera.y);
@@ -1170,87 +1753,186 @@
         ctx.restore();
       });
 
-      // رسم القنبلة الخداعية إذا كانت مزروعة
       if (currentBomb) currentBomb.draw();
 
-      gems.forEach(g => g.draw());
-      enemies.forEach(e => e.draw());
+      lootItems.forEach(item => item.draw());
+      enemyProjectiles.forEach(p => p.draw());
+      enemies.forEach(em => em.draw());
 
-      if (player && (gameRunning || currentStage > 1)) {
+      if (player && isGameRunning) {
         player.draw();
       }
 
       ctx.restore();
+      ctx.restore();
     }
 
     function gameLoop() {
-      updateGameEngine();
-      renderEngine();
+      updateGame();
+      render();
       requestAnimationFrame(gameLoop);
     }
     gameLoop();
 
     /* ==========================================================================
-       أزرار واجهات الاختيار والقوائم
+       16. التفاعل مع شاشات القوائم، الأبطال، والـ 30 مرحلة 🗺️
        ========================================================================== */
-    const heroCards = document.querySelectorAll('.hero-card');
-    heroCards.forEach(c => {
-      c.addEventListener('click', () => {
-        SoundFx.init();
-        SoundFx.gem();
-        heroCards.forEach(x => {
-          x.classList.remove('border-cyan-400', 'border-amber-400', 'border-pink-400', 'opacity-100');
-          x.classList.add('border-gray-700', 'opacity-70');
-        });
-        c.classList.remove('border-gray-700', 'opacity-70');
-        c.classList.add('opacity-100');
-        selectedHeroKey = c.getAttribute('data-hero');
-        if (selectedHeroKey === 'ninja') c.classList.add('border-cyan-400');
-        if (selectedHeroKey === 'mech') c.classList.add('border-amber-400');
-        if (selectedHeroKey === 'trooper') c.classList.add('border-pink-400');
+    function buildStagesGrid() {
+      const grid = document.getElementById('stagesGrid');
+      grid.innerHTML = '';
+      const unlocked = Storage.data.maxUnlockedStage || 1;
+
+      STAGES_CONFIG.forEach(st => {
+        const isUnlocked = st.id <= unlocked;
+        const isCompleted = Storage.data.stagesProgress[st.id]?.completed;
+        const highscore = Storage.data.stagesProgress[st.id]?.highscore || 0;
+
+        const card = document.createElement('div');
+        card.className = `p-2.5 rounded-2xl border flex flex-col items-center justify-between text-center transition cursor-pointer ${
+          isUnlocked 
+            ? 'bg-purple-950/40 border-purple-400/50 hover:bg-purple-900/60 active:scale-95 shadow-md shadow-purple-950/50' 
+            : 'bg-gray-950/60 border-gray-800 opacity-50 cursor-not-allowed'
+        }`;
+
+        card.innerHTML = `
+          <div class="text-xs font-black ${isUnlocked ? 'text-cyan-300' : 'text-gray-500'}">
+            ${st.id}#
+          </div>
+          <div class="text-xl my-1">
+            ${!isUnlocked ? '🔒' : (st.hasBoss ? '👹' : (isCompleted ? '⭐' : '⚔️'))}
+          </div>
+          <div class="text-[9px] font-bold ${isCompleted ? 'text-amber-400' : 'text-gray-400'} truncate w-full">
+            ${isCompleted ? `${highscore}ن` : (isUnlocked ? 'متاحة' : 'مقفل')}
+          </div>
+        `;
+
+        if (isUnlocked) {
+          card.addEventListener('click', () => {
+            selectStageForView(st);
+          });
+        }
+
+        grid.appendChild(card);
       });
+
+      // تحديد أول مرحلة متاحة افتراضياً
+      const defaultStage = STAGES_CONFIG[Math.min(unlocked - 1, 29)];
+      selectStageForView(defaultStage);
+    }
+
+    let selectedStageToPlay = 1;
+    function selectStageForView(st) {
+      selectedStageToPlay = st.id;
+      document.getElementById('detStageTitle').innerText = `${st.name}`;
+      document.getElementById('detStageDesc').innerText = `الهدف: ${st.targetScore} نقطة | الصعوبة: ${st.hasBoss ? '🔥 زعيم عملاق' : 'موجات متتابعة'}`;
+      const hs = Storage.data.stagesProgress[st.id]?.highscore || 0;
+      document.getElementById('detStageHighscore').innerText = `أعلى سكور حققته: ${hs} نقطة`;
+    }
+
+    document.getElementById('openStagesBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      buildStagesGrid();
+      document.getElementById('stagesModal').classList.remove('hidden');
     });
 
-    const weaponCards = document.querySelectorAll('.weapon-card');
-    weaponCards.forEach(c => {
-      c.addEventListener('click', () => {
-        SoundFx.init();
-        SoundFx.gem();
-        weaponCards.forEach(x => {
-          x.classList.remove('border-amber-400', 'border-cyan-400', 'border-pink-400', 'opacity-100');
-          x.classList.add('border-gray-700', 'opacity-70');
-        });
-        c.classList.remove('border-gray-700', 'opacity-70');
-        c.classList.add('opacity-100');
-        selectedWeaponKey = c.getAttribute('data-weapon');
-        if (selectedWeaponKey === 'katana') c.classList.add('border-amber-400');
-        if (selectedWeaponKey === 'hammer') c.classList.add('border-cyan-400');
-        if (selectedWeaponKey === 'spear') c.classList.add('border-pink-400');
-      });
+    document.getElementById('closeStagesModal').addEventListener('click', () => {
+      document.getElementById('stagesModal').classList.add('hidden');
     });
 
-    document.getElementById('startBtn').addEventListener('click', () => {
-      SoundFx.init();
-      startNewGame();
+    document.getElementById('playSelectedStageBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      loadAndStartStage(selectedStageToPlay);
     });
 
-    document.getElementById('restartBtn').addEventListener('click', () => {
-      SoundFx.init();
-      startNewGame();
+    document.getElementById('resumeBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      loadAndStartStage(Storage.data.currentStage || 1);
+    });
+
+    document.getElementById('newGameBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      loadAndStartStage(1);
     });
 
     document.getElementById('nextStageBtn').addEventListener('click', () => {
-      SoundFx.init();
-      proceedToNextStage();
+      SoundEngine.init();
+      loadAndStartStage(Math.min(30, activeStageIndex + 2));
     });
 
-    const muteBtn = document.getElementById('muteBtn');
-    muteBtn.addEventListener('click', () => {
-      SoundFx.init();
-      SoundFx.muted = !SoundFx.muted;
-      document.getElementById('audioOnIcon').classList.toggle('hidden', SoundFx.muted);
-      document.getElementById('audioOffIcon').classList.toggle('hidden', !SoundFx.muted);
+    document.getElementById('replayClearBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      loadAndStartStage(activeStageIndex + 1);
     });
+
+    document.getElementById('restartStageBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      loadAndStartStage(activeStageIndex + 1);
+    });
+
+    document.getElementById('menuClearBtn').addEventListener('click', () => {
+      location.reload();
+    });
+
+    document.getElementById('lossMenuBtn').addEventListener('click', () => {
+      location.reload();
+    });
+
+    // تبديل الأبطال
+    const heroCards = document.querySelectorAll('.hero-card');
+    heroCards.forEach(card => {
+      card.addEventListener('click', () => {
+        SoundEngine.init();
+        heroCards.forEach(c => {
+          c.classList.remove('border-cyan-400', 'border-amber-400', 'border-pink-400', 'opacity-100');
+          c.classList.add('border-gray-700', 'opacity-70');
+        });
+        card.classList.remove('border-gray-700', 'opacity-70');
+        card.classList.add('opacity-100');
+        selectedHero = card.getAttribute('data-hero');
+        if (selectedHero === 'ninja') card.classList.add('border-cyan-400');
+        if (selectedHero === 'mech') card.classList.add('border-amber-400');
+        if (selectedHero === 'trooper') card.classList.add('border-pink-400');
+      });
+    });
+
+    // تبديل الأسلحة
+    const weaponCards = document.querySelectorAll('.weapon-card');
+    weaponCards.forEach(card => {
+      card.addEventListener('click', () => {
+        SoundEngine.init();
+        weaponCards.forEach(c => {
+          c.classList.remove('border-amber-400', 'border-cyan-400', 'border-pink-400', 'opacity-100');
+          c.classList.add('border-gray-700', 'opacity-70');
+        });
+        card.classList.remove('border-gray-700', 'opacity-70');
+        card.classList.add('opacity-100');
+        selectedWeapon = card.getAttribute('data-weapon');
+        if (selectedWeapon === 'katana') card.classList.add('border-amber-400');
+        if (selectedWeapon === 'hammer') card.classList.add('border-cyan-400');
+        if (selectedWeapon === 'spear') card.classList.add('border-pink-400');
+      });
+    });
+
+    // أزرار شريط الإعدادات السريع
+    document.getElementById('screenShakeToggle').addEventListener('click', () => {
+      enableScreenShake = !enableScreenShake;
+      document.getElementById('shakeIcon').innerText = enableScreenShake ? '📳' : '📵';
+    });
+
+    document.getElementById('muteBtn').addEventListener('click', () => {
+      SoundEngine.init();
+      SoundEngine.muted = !SoundEngine.muted;
+      document.getElementById('audioOnIcon').classList.toggle('hidden', SoundEngine.muted);
+      document.getElementById('audioOffIcon').classList.toggle('hidden', !SoundEngine.muted);
+    });
+
+    document.getElementById('pauseBtn').addEventListener('click', () => {
+      isPaused = !isPaused;
+      document.getElementById('pauseBtn').innerText = isPaused ? '▶️' : '⏸️';
+    });
+
+    // تحديث شارة المرحلة الحالية المحفوظة في القائمة
+    document.getElementById('savedStageBadge').innerText = Storage.data.currentStage || 1;
   </script>
 </body>
 </html>
