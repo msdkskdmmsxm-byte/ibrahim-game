@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>سايبر أرينا - العالم المفتوح</title>
+  <title>سايبر أرينا - معركة القنابل والمراحل</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -18,15 +18,15 @@
     }
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #030308;
+      background-color: #020206;
       overflow: hidden;
       margin: 0;
       padding: 0;
     }
     .hud-card {
-      background: rgba(10, 15, 30, 0.78);
+      background: rgba(10, 15, 30, 0.82);
       backdrop-filter: blur(14px);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      border: 1px solid rgba(56, 189, 248, 0.35);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     }
     .neon-btn {
@@ -37,15 +37,15 @@
       transform: scale(0.96);
     }
 
-    /* أزرار التحكم المرفوعة عن الحافة */
+    /* أزرار تحكم مرفوعة للأعلى لتناسب قبضة الهاتف */
     #joystickContainer {
       position: absolute;
-      bottom: 85px; /* مرفوع للأعلى لتجنب حافة الهاتف */
+      bottom: 120px;
       left: 30px;
       width: 140px;
       height: 140px;
       background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.04) 70%, transparent 100%);
-      border: 2px dashed rgba(56, 189, 248, 0.4);
+      border: 2px dashed rgba(56, 189, 248, 0.45);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -58,7 +58,7 @@
       height: 58px;
       background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7);
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.85), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 22px rgba(56, 189, 248, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.5);
       position: absolute;
       pointer-events: none;
       transform: translate(0px, 0px);
@@ -66,10 +66,10 @@
     
     .action-btn-group {
       position: absolute;
-      bottom: 85px; /* مرفوعة للأعلى لتناسب حركة اليد الطبيعية */
+      bottom: 120px;
       right: 25px;
       display: flex;
-      gap: 15px;
+      gap: 12px;
       align-items: flex-end;
       pointer-events: auto;
       z-index: 50;
@@ -80,7 +80,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 22px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
       transition: transform 0.08s ease;
     }
     .round-action-btn:active {
@@ -93,12 +93,19 @@
       border: 2.5px solid rgba(252, 165, 165, 0.7);
       box-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
     }
+    #bombBtn {
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle at 35% 35%, #f97316, #c2410c);
+      border: 2.5px solid rgba(253, 186, 116, 0.7);
+      box-shadow: 0 0 22px rgba(249, 115, 22, 0.7);
+    }
     #dashBtn {
-      width: 68px;
-      height: 68px;
+      width: 65px;
+      height: 65px;
       background: radial-gradient(circle at 35% 35%, #ec4899, #9d174d);
       border: 2px solid rgba(244, 114, 182, 0.7);
-      box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.6);
     }
   </style>
 </head>
@@ -112,29 +119,36 @@
     
     <!-- شريط القيادة HUD -->
     <div id="hudBar" class="w-full flex justify-between items-start opacity-0 transition-opacity duration-300">
-      <div class="hud-card rounded-2xl p-3 flex flex-col gap-1.5 min-w-[150px] md:min-w-[220px]">
+      <div class="hud-card rounded-2xl p-2.5 flex flex-col gap-1 min-w-[140px] md:min-w-[210px]">
         <div class="flex justify-between items-center text-xs font-bold">
           <span class="text-rose-400">❤️ نقاط الحياة</span>
           <span id="hpText" class="font-mono text-cyan-300">100%</span>
         </div>
-        <div class="w-full bg-black/70 rounded-full h-2.5 p-0.5 border border-cyan-500/30 overflow-hidden">
+        <div class="w-full bg-black/70 rounded-full h-2 p-0.5 border border-cyan-500/30 overflow-hidden">
           <div id="hpBar" class="h-full rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-cyan-400 transition-all duration-150" style="width: 100%;"></div>
         </div>
-        <div class="flex justify-between items-center text-[11px] font-bold mt-0.5">
-          <span class="text-amber-400">⚡ اندفاع النيون</span>
-          <span id="dashState" class="text-emerald-400">جاهز</span>
+        
+        <!-- تقدم الهدف للمرحلة -->
+        <div class="flex justify-between items-center text-[10px] font-bold mt-1">
+          <span class="text-amber-400">🎯 هدف المرحلة</span>
+          <span id="stageTargetText" class="text-cyan-300 font-mono">0 / 600</span>
+        </div>
+        <div class="w-full bg-black/70 rounded-full h-1.5 border border-amber-500/30 overflow-hidden">
+          <div id="stageProgressBar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-150" style="width: 0%;"></div>
         </div>
       </div>
 
-      <div class="hud-card rounded-2xl px-5 py-2.5 text-center pointer-events-auto">
-        <div class="text-[10px] text-cyan-300 font-bold uppercase tracking-wider">النقاط</div>
-        <div id="scoreVal" class="text-2xl md:text-3xl font-black text-amber-300 font-mono">0</div>
+      <!-- إحصائيات المرحلة والسكور والقنابل -->
+      <div class="hud-card rounded-2xl px-4 py-2 text-center pointer-events-auto flex flex-col items-center">
+        <div class="text-[10px] text-cyan-300 font-bold uppercase tracking-wider">النقاط الكلية</div>
+        <div id="scoreVal" class="text-xl md:text-2xl font-black text-amber-300 font-mono">0</div>
         <div class="text-xs text-gray-300 font-bold flex gap-3 mt-0.5">
-          <span>موجة: <b id="waveVal" class="text-pink-400 font-mono">1</b></span>
-          <span>الوقت: <b id="timeVal" class="text-cyan-300 font-mono">00:00</b></span>
+          <span>المرحلة: <b id="stageNumVal" class="text-pink-400 font-mono">1</b></span>
+          <span>القنابل: <b id="bombsLeftVal" class="text-orange-400 font-mono">5</b> 💣</span>
         </div>
       </div>
 
+      <!-- زر الصوت -->
       <button id="muteBtn" class="hud-card p-3 rounded-2xl text-cyan-300 active:scale-90 pointer-events-auto transition">
         <svg id="audioOnIcon" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -146,19 +160,24 @@
       </button>
     </div>
 
-    <!-- مجموعة أزرار التحكم بالموبايل المرتفعة مع اللمس المتعدد -->
+    <!-- مجموعة أزرار التحكم المرفوعة للأعلى -->
     <div id="controlsGroup" class="w-full relative opacity-0 transition-opacity duration-300">
       <div id="joystickContainer">
         <div id="joystickKnob"></div>
       </div>
 
       <div class="action-btn-group">
-        <!-- زر الهجوم باليدين والسلاح -->
+        <!-- زر القنبلة الخداعية والتفجير -->
+        <button id="bombBtn" class="round-action-btn">
+          <span id="bombBtnIcon" class="text-2xl">💣</span>
+          <span id="bombBtnLabel" class="text-[9px] font-black">ازرع (5)</span>
+        </button>
+        <!-- زر الهجوم بالسلاح المختار -->
         <button id="attackBtn" class="round-action-btn">
           <span class="text-3xl">⚔️</span>
           <span class="text-[10px] font-black tracking-wider">ضربة</span>
         </button>
-        <!-- زر الدش السريع -->
+        <!-- زر الاندفاع -->
         <button id="dashBtn" class="round-action-btn">
           <span class="text-xl">⚡</span>
           <span class="text-[9px] font-black">اندفاع</span>
@@ -167,73 +186,113 @@
     </div>
   </div>
 
-  <!-- القائمة الرئيسية -->
-  <div id="startScreen" class="absolute inset-0 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md z-40 transition-all duration-300">
-    <div class="hud-card max-w-md w-full rounded-3xl p-6 md:p-8 text-center border-2 border-cyan-500/40 shadow-2xl">
-      <h1 class="text-4xl md:text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
+  <!-- القائمة الرئيسية واختيار الشخصية والسلاح -->
+  <div id="startScreen" class="absolute inset-0 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md z-40 transition-all duration-300">
+    <div class="hud-card max-w-md w-full rounded-3xl p-5 md:p-7 text-center border-2 border-cyan-500/40 shadow-2xl overflow-y-auto max-h-[95vh]">
+      <h1 class="text-3xl md:text-5xl font-black mb-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300">
         سـايـبـر أريـنـا
       </h1>
-      <p class="text-xs md:text-sm text-gray-300 mb-5 font-semibold">
-        عالم مفتوح لا نهائي! تحرّك بالجويستيك واضرب بالسيف والأسلحة في نفس اللحظة!
+      <p class="text-xs text-gray-300 mb-4 font-semibold">
+        اجتز المراحل، ازرع القنابل الخداعية لجذب الوحوش وتفجيرهم، واختر سلاحك المفضل!
       </p>
 
-      <div class="mb-5">
-        <label class="block text-xs uppercase tracking-widest text-cyan-300 font-bold mb-3">اختر مقاتلك وسلاحه:</label>
-        <div class="grid grid-cols-3 gap-2.5" id="heroSelector">
-          <div data-hero="ninja" class="hero-card cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-950/40 flex flex-col items-center">
-            <span class="text-3xl mb-1">🥷</span>
+      <!-- اختيار المقاتل -->
+      <div class="mb-3">
+        <label class="block text-[11px] uppercase tracking-widest text-cyan-300 font-bold mb-2">اختر المحارب:</label>
+        <div class="grid grid-cols-3 gap-2" id="heroSelector">
+          <div data-hero="ninja" class="hero-card cursor-pointer p-2.5 rounded-2xl border-2 border-cyan-400 bg-cyan-950/40 flex flex-col items-center">
+            <span class="text-2xl mb-1">🥷</span>
             <span class="text-xs font-bold text-cyan-300">النينجا</span>
-            <span class="text-[10px] text-gray-400">سيف كاتانا مشع</span>
+            <span class="text-[9px] text-gray-400">فائق السرعة</span>
           </div>
-          <div data-hero="mech" class="hero-card cursor-pointer p-3 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
-            <span class="text-3xl mb-1">🤖</span>
+          <div data-hero="mech" class="hero-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-1">🤖</span>
             <span class="text-xs font-bold text-amber-300">السايبورغ</span>
-            <span class="text-[10px] text-gray-400">مطرقة صدمة طاقية</span>
+            <span class="text-[9px] text-gray-400">صحة ودرع هائل</span>
           </div>
-          <div data-hero="trooper" class="hero-card cursor-pointer p-3 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
-            <span class="text-3xl mb-1">⚡</span>
+          <div data-hero="trooper" class="hero-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-1">⚡</span>
             <span class="text-xs font-bold text-pink-300">الكوماندوز</span>
-            <span class="text-[10px] text-gray-400">رمح ليزري خارق</span>
+            <span class="text-[9px] text-gray-400">متوازن ومراوغ</span>
           </div>
         </div>
       </div>
 
-      <button id="startBtn" class="neon-btn w-full py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-cyan-500 font-black text-xl text-white tracking-wider mb-3">
-        ⚔️ ادخل المعركة الآن
+      <!-- اختيار السلاح -->
+      <div class="mb-4">
+        <label class="block text-[11px] uppercase tracking-widest text-amber-300 font-bold mb-2">اختر ترسانة السلاح:</label>
+        <div class="grid grid-cols-3 gap-2" id="weaponSelector">
+          <div data-weapon="katana" class="weapon-card cursor-pointer p-2.5 rounded-2xl border-2 border-amber-400 bg-amber-950/40 flex flex-col items-center">
+            <span class="text-2xl mb-1">🗡️</span>
+            <span class="text-xs font-bold text-amber-300">كاتانا نيون</span>
+            <span class="text-[9px] text-gray-400">ضربات سريعة</span>
+          </div>
+          <div data-weapon="hammer" class="weapon-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-1">🔨</span>
+            <span class="text-xs font-bold text-cyan-300">مطرقة صدمة</span>
+            <span class="text-[9px] text-gray-400">ضرر دائري ضخم</span>
+          </div>
+          <div data-weapon="spear" class="weapon-card cursor-pointer p-2.5 rounded-2xl border border-gray-700 bg-gray-900/40 flex flex-col items-center opacity-70">
+            <span class="text-2xl mb-1">⚡</span>
+            <span class="text-xs font-bold text-pink-300">رمح ليزر</span>
+            <span class="text-[9px] text-gray-400">مدى بعيد خارق</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="startBtn" class="neon-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-cyan-500 font-black text-xl text-white tracking-wider mb-2">
+        ⚔️ خوض المعركة الآن
       </button>
 
-      <div class="text-[11px] text-gray-400 bg-black/40 p-2.5 rounded-xl border border-white/5">
-        🕹️ يمكنك الركض بالجويستيك والضرب معاً بكلتا يديك!
+      <div class="text-[10px] text-gray-400 bg-black/40 p-2 rounded-xl border border-white/5">
+        💡 ازرع القنبلة واهرب! ستجذب الوحوش نحوها ثم اضغط زر التفجير لإبادتهم!
       </div>
     </div>
   </div>
 
+  <!-- شاشة الفوز بالمرحلة والانتقال -->
+  <div id="stageClearScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg z-50">
+    <div class="hud-card max-w-sm w-full rounded-3xl p-6 text-center border-2 border-emerald-500/70 shadow-2xl">
+      <div class="text-5xl mb-2 animate-bounce">🏆</div>
+      <h2 class="text-3xl font-black text-emerald-400 mb-1">اكتملت المرحلة!</h2>
+      <p id="stageClearDesc" class="text-gray-300 text-xs mb-5">تمت تصفية المنطقة وفتح البوابة للمرحلة القادمة!</p>
+      
+      <div class="bg-gray-950/70 rounded-2xl p-3 mb-5 border border-white/10 text-xs text-amber-300 font-bold">
+        تمت تعبئة 5 قنابل جديدة لمرحلتك القادمة! 💣
+      </div>
+
+      <button id="nextStageBtn" class="neon-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-black text-lg">
+        🚀 الانتقال للمرحلة التالية
+      </button>
+    </div>
+  </div>
+
   <!-- شاشة الخسارة -->
-  <div id="lossScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/80 backdrop-blur-lg z-50">
+  <div id="lossScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg z-50">
     <div class="hud-card max-w-sm w-full rounded-3xl p-6 text-center border-2 border-rose-500/60 shadow-2xl">
       <div class="text-5xl mb-2">💀</div>
       <h2 class="text-3xl font-black text-rose-500 mb-1">سقط المحارب!</h2>
-      <p class="text-gray-300 text-xs mb-5">لقد قاومت بشجاعة في ساحة النيون!</p>
+      <p class="text-gray-300 text-xs mb-5">حاصرتك الوحوش في أعماق الساحة!</p>
       <div class="bg-gray-950/70 rounded-2xl p-3.5 mb-5 border border-white/10 flex justify-around">
         <div>
-          <div class="text-[11px] text-gray-400">النقاط</div>
+          <div class="text-[11px] text-gray-400">النقاط الكلية</div>
           <div id="finalScoreTxt" class="text-2xl font-black text-amber-300 font-mono">0</div>
         </div>
         <div class="border-l border-white/10"></div>
         <div>
-          <div class="text-[11px] text-gray-400">الصمود</div>
-          <div id="finalTimeTxt" class="text-2xl font-black text-cyan-300 font-mono">00:00</div>
+          <div class="text-[11px] text-gray-400">المرحلة</div>
+          <div id="finalStageTxt" class="text-2xl font-black text-cyan-300 font-mono">1</div>
         </div>
       </div>
       <button id="restartBtn" class="neon-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-black text-lg">
-        🔄 إعادة النزال
+        🔄 إعادة النزال من البداية
       </button>
     </div>
   </div>
 
   <script>
     /* ==========================================================================
-       محرك الصوت الإلكتروني المطور
+       محرك الصوت الإلكتروني
        ========================================================================== */
     const SoundFx = {
       ctx: null,
@@ -264,25 +323,24 @@
           osc.stop(this.ctx.currentTime + duration);
         } catch(e) {}
       },
-      slash() {
-        this.tone(680, 'sawtooth', 0.12, 0.35, true);
-      },
+      slash() { this.tone(680, 'sawtooth', 0.12, 0.35, true); },
       gem() {
         this.tone(900, 'sine', 0.08, 0.2, false);
         setTimeout(() => this.tone(1400, 'sine', 0.12, 0.2, false), 60);
       },
-      dash() {
-        this.tone(480, 'sawtooth', 0.2, 0.3, true);
+      dash() { this.tone(480, 'sawtooth', 0.2, 0.3, true); },
+      hit() { this.tone(150, 'square', 0.16, 0.4, true); },
+      kill() { this.tone(110, 'sawtooth', 0.35, 0.5, true); },
+      bombPlant() {
+        this.tone(300, 'sine', 0.1, 0.3, false);
+        setTimeout(() => this.tone(600, 'sine', 0.15, 0.3, false), 80);
       },
-      hit() {
-        this.tone(150, 'square', 0.16, 0.4, true);
+      nukeBoom() {
+        this.tone(70, 'sawtooth', 0.6, 0.7, true);
       },
-      kill() {
-        this.tone(110, 'sawtooth', 0.35, 0.5, true);
-      },
-      power() {
-        [400, 600, 800, 1100].forEach((f, i) => {
-          setTimeout(() => this.tone(f, 'triangle', 0.1, 0.2, false), i * 50);
+      win() {
+        [440, 554, 659, 880].forEach((f, i) => {
+          setTimeout(() => this.tone(f, 'triangle', 0.14, 0.25, false), i * 70);
         });
       },
       over() {
@@ -293,7 +351,7 @@
     };
 
     /* ==========================================================================
-       تهيئة الكانفاس والصورة الخلفية المكررة مع الفلتر والتعتيم
+       تهيئة الكانفاس والكاميرا
        ========================================================================== */
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -309,31 +367,17 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // تحميل وتجهيز الصورة في الخلفية مع تكرارها وتعتيمها
-    const bgImage = new Image();
-    bgImage.crossOrigin = 'anonymous';
-    // رابط الصورة مع دعم CORS وتجنب الروابط المقيدة
-    bgImage.src = 'https://picsum.photos/1200/1200?grayscale&blur=2'; // قالب أنيق بديل جاهز للتحميل المباشر
-    let bgPattern = null;
-    bgImage.onload = () => {
-      bgPattern = ctx.createPattern(bgImage, 'repeat');
-    };
-
-    /* ==========================================================================
-       كاميرا العالم المفتوح اللانهائي (Infinite World Camera)
-       ========================================================================== */
     const camera = {
       x: 0,
       y: 0,
       update(targetX, targetY) {
-        // تتبع سلس نحو منتصف الشاشة
         this.x += (targetX - width / 2 - this.x) * 0.1;
         this.y += (targetY - height / 2 - this.y) * 0.1;
       }
     };
 
     /* ==========================================================================
-       نظام اللمس المتعدد المطور للجويستيك والأزرار (Multi-touch Engine)
+       نظام اللمس المتعدد المطور للجويستيك المرفوع
        ========================================================================== */
     const joystickContainer = document.getElementById('joystickContainer');
     const joystickKnob = document.getElementById('joystickKnob');
@@ -360,18 +404,14 @@
     window.addEventListener('touchmove', (e) => {
       if (joyTouchId !== null) {
         const touch = getTouchById(e.touches, joyTouchId);
-        if (touch) {
-          updateJoystickPosition(touch.clientX, touch.clientY);
-        }
+        if (touch) updateJoystickPosition(touch.clientX, touch.clientY);
       }
     }, { passive: false });
 
     function updateJoystickPosition(touchX, touchY) {
       const rect = joystickContainer.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      let dx = touchX - centerX;
-      let dy = touchY - centerY;
+      let dx = touchX - (rect.left + rect.width / 2);
+      let dy = touchY - (rect.top + rect.height / 2);
       const dist = Math.hypot(dx, dy);
 
       if (dist > maxRadius) {
@@ -379,7 +419,7 @@
         dy = (dy / dist) * maxRadius;
       }
 
-      joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+      joystickKnob.style.transform = `translate(${dx}px,${dy}px)`;
       joyInput.x = dx / maxRadius;
       joyInput.y = dy / maxRadius;
     }
@@ -397,109 +437,91 @@
     window.addEventListener('touchend', endJoystickTouch);
     window.addEventListener('touchcancel', endJoystickTouch);
 
-    // ربط زر الهجوم باللمس
-    const attackBtn = document.getElementById('attackBtn');
-    attackBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (gameRunning && player) player.performAttack();
-    }, { passive: false });
-
-    // ربط زر الدش باللمس
-    const dashBtn = document.getElementById('dashBtn');
-    dashBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (gameRunning && player && player.dashCooldown <= 0) player.triggerDash();
-    }, { passive: false });
-
-    // كيبورد إضافي لأجهزة الكمبيوتر
-    const keys = { w: false, s: false, a: false, d: false };
-    window.addEventListener('keydown', (e) => {
-      if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = true;
-      if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = true;
-      if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = true;
-      if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = true;
-      if (e.code === 'KeyJ' || e.code === 'KeyK') {
-        if (gameRunning && player) player.performAttack();
-      }
-      if (e.code === 'Space') {
-        if (gameRunning && player && player.dashCooldown <= 0) player.triggerDash();
-      }
-    });
-    window.addEventListener('keyup', (e) => {
-      if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = false;
-      if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = false;
-      if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = false;
-      if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = false;
-    });
-
     /* ==========================================================================
-       خصائص الشخصيات والمحاربين
+       أنظمة الأسلحة والمقاتلين والمراحل
        ========================================================================== */
-    const HEROES = {
-      ninja: {
-        name: 'النينجا',
-        color: '#06b6d4',
-        accent: '#22d3ee',
-        speed: 5.6,
-        maxHp: 100,
-        dashCooldownTime: 85,
-        weapon: 'katana',
-        attackRange: 80,
-        attackArc: Math.PI * 0.9,
-        attackDamage: 60
-      },
-      mech: {
-        name: 'السايبورغ',
-        color: '#fbbf24',
-        accent: '#f59e0b',
-        speed: 4.5,
-        maxHp: 160,
-        dashCooldownTime: 130,
-        weapon: 'hammer',
-        attackRange: 100,
-        attackArc: Math.PI * 1.5,
-        attackDamage: 95
-      },
-      trooper: {
-        name: 'الكوماندوز',
-        color: '#ec4899',
-        accent: '#f43f5e',
-        speed: 5.0,
-        maxHp: 125,
-        dashCooldownTime: 105,
-        weapon: 'spear',
-        attackRange: 120,
-        attackArc: Math.PI * 0.6,
-        attackDamage: 75
-      }
+    const HERO_PROFILES = {
+      ninja: { name: 'النينجا', color: '#06b6d4', accent: '#22d3ee', speed: 5.6, maxHp: 100, dashCooldown: 80 },
+      mech: { name: 'السايبورغ', color: '#fbbf24', accent: '#f59e0b', speed: 4.5, maxHp: 165, dashCooldown: 120 },
+      trooper: { name: 'الكوماندوز', color: '#ec4899', accent: '#f43f5e', speed: 5.1, maxHp: 130, dashCooldown: 100 }
     };
-    let currentHeroKey = 'ninja';
+
+    const WEAPON_PROFILES = {
+      katana: { name: 'كاتانا نيون', range: 85, arc: Math.PI * 0.95, damage: 65, icon: '🗡️' },
+      hammer: { name: 'مطرقة صدمة', range: 105, arc: Math.PI * 1.6, damage: 100, icon: '🔨' },
+      spear: { name: 'رمح ليزري', range: 135, arc: Math.PI * 0.65, damage: 85, icon: '⚡' }
+    };
+
+    let selectedHeroKey = 'ninja';
+    let selectedWeaponKey = 'katana';
+
+    // تعريف أهداف المراحل وصعوبتها
+    const STAGE_TARGETS = [600, 1500, 2600, 4000, 6000, 9000];
 
     /* ==========================================================================
-       كلاس بطل اللعبة (أطراف كاملة + هجوم السلاح + آثار الأقدام)
+       كلاس القنبلة الخداعية الذكية (Decoy Bomb)
        ========================================================================== */
-    class HeroPlayer {
-      constructor(cfg) {
+    class DecoyBomb {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 20;
+        this.pulse = 0;
+        this.active = true;
+      }
+      update() {
+        this.pulse += 0.12;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        // حلقة نيون نابضة تخدع الوحوش
+        const glow = Math.sin(this.pulse) * 12;
+        ctx.strokeStyle = '#f97316';
+        ctx.shadowColor = '#ea580c';
+        ctx.shadowBlur = 18 + glow;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius + 8 + glow * 0.5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // جسم القنبلة
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // فتيل وضوء أحمر متقطع
+        ctx.fillStyle = Math.sin(this.pulse * 2) > 0 ? '#ef4444' : '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    /* ==========================================================================
+       كلاس اللاعب المحارب
+       ========================================================================== */
+    class GamePlayer {
+      constructor(heroCfg, weaponCfg) {
         this.x = 0;
         this.y = 0;
-        this.baseSpeed = cfg.speed;
-        this.speed = cfg.speed;
-        this.maxHp = cfg.maxHp;
-        this.hp = cfg.maxHp;
-        this.color = cfg.color;
-        this.accent = cfg.accent;
-        this.dashCooldownTime = cfg.dashCooldownTime;
+        this.speed = heroCfg.speed;
+        this.maxHp = heroCfg.maxHp;
+        this.hp = heroCfg.maxHp;
+        this.color = heroCfg.color;
+        this.accent = heroCfg.accent;
+        this.dashCooldownTime = heroCfg.dashCooldown;
         this.dashCooldown = 0;
         this.isDashing = false;
         this.dashTimer = 0;
         this.dashVx = 0;
         this.dashVy = 0;
 
-        // نظام الهجوم بالسلاح
-        this.weapon = cfg.weapon;
-        this.attackRange = cfg.attackRange;
-        this.attackArc = cfg.attackArc;
-        this.attackDamage = cfg.attackDamage;
+        this.weapon = weaponCfg;
         this.isAttacking = false;
         this.attackTimer = 0;
         this.attackSwing = 0;
@@ -507,26 +529,20 @@
         this.angle = 0;
         this.walkCycle = 0;
         this.isMoving = false;
-        this.stepDustTimer = 0;
+        this.dustTimer = 0;
       }
 
-      triggerDash() {
+      performDash() {
         let vx = joyInput.x;
         let vy = joyInput.y;
-        if (keys.w) vy -= 1;
-        if (keys.s) vy += 1;
-        if (keys.a) vx -= 1;
-        if (keys.d) vx += 1;
-
         if (vx === 0 && vy === 0) {
           vx = Math.cos(this.angle);
           vy = Math.sin(this.angle);
         } else {
-          const len = Math.hypot(vx, vy);
-          vx /= len;
-          vy /= len;
+          const l = Math.hypot(vx, vy);
+          vx /= l;
+          vy /= l;
         }
-
         this.isDashing = true;
         this.dashTimer = 12;
         this.dashVx = vx * 18;
@@ -540,27 +556,27 @@
         if (this.isAttacking) return;
         this.isAttacking = true;
         this.attackTimer = 14;
-        this.attackSwing = -this.attackArc / 2;
+        this.attackSwing = -this.weapon.arc / 2;
         SoundFx.slash();
 
-        // فحص إصابة الأعداء داخل نطاق السلاح
+        // فحص إصابة الأعداء بنطاق السلاح
         for (let i = enemies.length - 1; i >= 0; i--) {
           const em = enemies[i];
           const dist = Math.hypot(em.x - this.x, em.y - this.y);
-          if (dist <= this.attackRange) {
-            const angleToEnemy = Math.atan2(em.y - this.y, em.x - this.x);
-            let diff = angleToEnemy - this.angle;
+          if (dist <= this.weapon.range) {
+            const angToEnemy = Math.atan2(em.y - this.y, em.x - this.x);
+            let diff = angToEnemy - this.angle;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
 
-            if (Math.abs(diff) <= this.attackArc / 1.7) {
-              em.hp -= this.attackDamage;
-              addShockwave(em.x, em.y, '#ffffff', 8);
+            if (Math.abs(diff) <= this.weapon.arc / 1.7) {
+              em.hp -= this.weapon.damage;
               SoundFx.hit();
+              addShockwave(em.x, em.y, '#ffffff', 6);
               if (em.hp <= 0) {
                 SoundFx.kill();
                 addShockwave(em.x, em.y, em.color, 16);
-                score += 150;
+                addScore(em.scoreValue);
                 enemies.splice(i, 1);
               }
             }
@@ -571,14 +587,12 @@
       update() {
         if (this.dashCooldown > 0) this.dashCooldown--;
 
-        // تحديث الهجوم
         if (this.isAttacking) {
           this.attackTimer--;
-          this.attackSwing += this.attackArc / 12;
+          this.attackSwing += this.weapon.arc / 12;
           if (this.attackTimer <= 0) this.isAttacking = false;
         }
 
-        // الحركة
         if (this.isDashing) {
           this.x += this.dashVx;
           this.y += this.dashVy;
@@ -587,12 +601,6 @@
         } else {
           let mx = joyInput.x;
           let my = joyInput.y;
-
-          if (keys.w) my -= 1;
-          if (keys.s) my += 1;
-          if (keys.a) mx -= 1;
-          if (keys.d) mx += 1;
-
           const len = Math.hypot(mx, my);
           this.isMoving = len > 0.08;
 
@@ -604,11 +612,10 @@
             this.angle = Math.atan2(my, mx);
             this.walkCycle += 0.22;
 
-            // توليد آثار أقدام وغبار نيون
-            this.stepDustTimer++;
-            if (this.stepDustTimer > 4) {
-              this.stepDustTimer = 0;
-              spawnFootstepDust(this.x, this.y, this.color);
+            this.dustTimer++;
+            if (this.dustTimer > 4) {
+              this.dustTimer = 0;
+              spawnDust(this.x, this.y, this.color);
             }
           }
         }
@@ -620,8 +627,7 @@
         ctx.rotate(this.angle);
 
         const legSwing = Math.sin(this.walkCycle) * 10;
-
-        // الرجلين
+        // رسم الرجلين
         ctx.fillStyle = '#1e293b';
         ctx.strokeStyle = this.accent;
         ctx.lineWidth = 3;
@@ -635,7 +641,7 @@
         ctx.fill();
         ctx.stroke();
 
-        // الجسم والدرع
+        // الجسم
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         ctx.roundRect(-14, -12, 22, 24, 6);
@@ -646,49 +652,44 @@
         ctx.shadowBlur = 12;
         ctx.stroke();
 
-        // حركة اليدين مع الهجوم بالسلاح
+        // اليدين وحركة السلاح
         const armSwing = Math.cos(this.walkCycle) * 6;
         ctx.fillStyle = this.accent;
         ctx.beginPath();
         ctx.arc(4, -15 - armSwing, 5, 0, Math.PI * 2);
         ctx.fill();
 
-        // يد السلاح مع أنيميشن القطع بالسيف
         ctx.save();
-        let weaponAngle = 0;
-        if (this.isAttacking) weaponAngle = this.attackSwing;
-
+        let weaponRot = this.isAttacking ? this.attackSwing : 0;
         ctx.translate(8, 14);
-        ctx.rotate(weaponAngle);
-
+        ctx.rotate(weaponRot);
         ctx.fillStyle = this.accent;
         ctx.beginPath();
         ctx.arc(0, 0, 5.5, 0, Math.PI * 2);
         ctx.fill();
 
-        // رسم السلاح الخاص
+        // رسم السلاح المختار
         ctx.strokeStyle = '#ffffff';
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 16;
         ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        if (this.weapon === 'hammer') {
+        if (selectedWeaponKey === 'hammer') {
           ctx.lineTo(24, 0);
           ctx.stroke();
           ctx.fillStyle = this.accent;
           ctx.fillRect(22, -8, 10, 16);
-        } else if (this.weapon === 'spear') {
+        } else if (selectedWeaponKey === 'spear') {
           ctx.lineTo(34, 0);
           ctx.stroke();
         } else {
-          // سيف الكاتانا
           ctx.lineTo(28, 0);
           ctx.stroke();
         }
         ctx.restore();
 
-        // الرأس والخوذة
+        // الرأس
         ctx.fillStyle = '#111827';
         ctx.beginPath();
         ctx.arc(0, 0, 11, 0, Math.PI * 2);
@@ -697,7 +698,7 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // قناع الوجه المتوهج
+        // القناع
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 10;
@@ -707,7 +708,7 @@
 
         ctx.restore();
 
-        // تأثير قوس الضربة (Slash Arc Effect)
+        // أثر قوس الضربة
         if (this.isAttacking) {
           ctx.save();
           ctx.translate(this.x, this.y);
@@ -717,7 +718,7 @@
           ctx.shadowBlur = 20;
           ctx.lineWidth = 4;
           ctx.beginPath();
-          ctx.arc(0, 0, this.attackRange * 0.75, -this.attackArc / 2, this.attackArc / 2);
+          ctx.arc(0, 0, this.weapon.range * 0.75, -this.weapon.arc / 2, this.weapon.arc / 2);
           ctx.stroke();
           ctx.restore();
         }
@@ -725,47 +726,62 @@
     }
 
     /* ==========================================================================
-       كلاس الوحوش الملاحقة في العالم المفتوح
+       كلاس الوحوش المتنوعة مع الذكاء الخداعي
        ========================================================================== */
-    class MonsterEnemy {
-      constructor(targetX, targetY) {
-        // تظهر في محيط اللاعب من بعيد
-        const spawnAngle = Math.random() * Math.PI * 2;
-        const spawnDist = Math.max(width, height) * 0.7 + Math.random() * 200;
-        this.x = targetX + Math.cos(spawnAngle) * spawnDist;
-        this.y = targetY + Math.sin(spawnAngle) * spawnDist;
+    class VarietyEnemy {
+      constructor(px, py, stage) {
+        const ang = Math.random() * Math.PI * 2;
+        const d = Math.max(width, height) * 0.7 + Math.random() * 200;
+        this.x = px + Math.cos(ang) * d;
+        this.y = py + Math.sin(ang) * d;
 
-        const rand = Math.random();
-        if (rand > 0.7) {
-          this.speed = 3.6 + Math.random() * 0.5 + (waveNumber * 0.12);
-          this.hp = 40;
+        const roll = Math.random();
+        if (roll > 0.75) {
+          // وحش متسلل سريع
+          this.speed = 3.8 + (stage * 0.15);
+          this.hp = 35 + (stage * 10);
           this.dmg = 12;
           this.color = '#a855f7';
           this.radius = 16;
-        } else if (rand > 0.5 && waveNumber >= 2) {
-          this.speed = 1.9 + (waveNumber * 0.08);
-          this.hp = 120;
-          this.dmg = 30;
+          this.scoreValue = 160;
+        } else if (roll > 0.5 && stage >= 2) {
+          // عملاق تيتان مدرع
+          this.speed = 1.8 + (stage * 0.08);
+          this.hp = 130 + (stage * 30);
+          this.dmg = 32;
           this.color = '#ea580c';
-          this.radius = 26;
+          this.radius = 28;
+          this.scoreValue = 250;
+        } else if (roll > 0.35 && stage >= 3) {
+          // كائن نيون سام
+          this.speed = 3.2 + (stage * 0.1);
+          this.hp = 70 + (stage * 15);
+          this.dmg = 22;
+          this.color = '#10b981';
+          this.radius = 21;
+          this.scoreValue = 200;
         } else {
-          this.speed = 2.6 + Math.random() * 0.5 + (waveNumber * 0.1);
-          this.hp = 60;
+          // ملاحق عادي
+          this.speed = 2.6 + (stage * 0.12);
+          this.hp = 55 + (stage * 12);
           this.dmg = 18;
           this.color = '#f43f5e';
           this.radius = 19;
+          this.scoreValue = 130;
         }
         this.angle = 0;
-        this.stepAnim = Math.random() * 10;
+        this.walkAnim = Math.random() * 10;
       }
 
-      update(player) {
-        const dx = player.x - this.x;
-        const dy = player.y - this.y;
+      update(playerTarget, activeBomb) {
+        // إذا وُجدت قنبلة خداعية، يذهب الوحش إليها ظناً أنها اللاعب!
+        const target = activeBomb ? activeBomb : playerTarget;
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
         this.angle = Math.atan2(dy, dx);
         this.x += Math.cos(this.angle) * this.speed;
         this.y += Math.sin(this.angle) * this.speed;
-        this.stepAnim += 0.22;
+        this.walkAnim += 0.22;
       }
 
       draw() {
@@ -776,7 +792,7 @@
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 12;
 
-        const clawSwing = Math.sin(this.stepAnim) * 8;
+        const clawSwing = Math.sin(this.walkAnim) * 8;
         ctx.strokeStyle = this.color;
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -806,14 +822,14 @@
     }
 
     /* ==========================================================================
-       الجواهر والآثار الدخانية (Gems & Particles)
+       الجواهر والجزيئات
        ========================================================================== */
-    class WorldGem {
+    class StageGem {
       constructor(px, py) {
-        const ang = Math.random() * Math.PI * 2;
-        const dist = Math.random() * 600 + 80;
-        this.x = px + Math.cos(ang) * dist;
-        this.y = py + Math.sin(ang) * dist;
+        const a = Math.random() * Math.PI * 2;
+        const d = Math.random() * 600 + 90;
+        this.x = px + Math.cos(a) * d;
+        this.y = py + Math.sin(a) * d;
         this.pulse = Math.random() * 5;
       }
       update() { this.pulse += 0.08; }
@@ -849,43 +865,94 @@
       }
     }
 
-    function spawnFootstepDust(x, y, color) {
+    function spawnDust(x, y, color) {
       particles.push({
         x: x + (Math.random() - 0.5) * 8,
         y: y + (Math.random() - 0.5) * 8,
         vx: (Math.random() - 0.5) * 0.8,
         vy: (Math.random() - 0.5) * 0.8,
-        color: color,
+        color,
         alpha: 0.6,
         size: Math.random() * 4 + 2
       });
     }
 
     /* ==========================================================================
-       دورة تشغيل المعركة (Game Loop & World Logic)
+       إدارة منطق اللعبة والمراحل والقنابل
        ========================================================================== */
     let player;
     let enemies = [];
     let gems = [];
+    let currentBomb = null;
+    let bombsCount = 5;
+    let currentStage = 1;
+    let stageScore = 0;
+    let totalScore = 0;
     let gameRunning = false;
-    let score = 0;
-    let waveNumber = 1;
-    let gameStartTime = 0;
-    let enemySpawnCounter = 0;
+    let enemySpawner = 0;
+
+    function addScore(pts) {
+      totalScore += pts;
+      stageScore += pts;
+      checkStageProgress();
+    }
+
+    function checkStageProgress() {
+      const target = STAGE_TARGETS[currentStage - 1] || 10000;
+      const pct = Math.min(100, (stageScore / target) * 100);
+      document.getElementById('stageProgressBar').style.width = `${pct}%`;
+      document.getElementById('stageTargetText').innerText = `${stageScore} /${target}`;
+
+      if (stageScore >= target) {
+        completeCurrentStage();
+      }
+    }
+
+    function completeCurrentStage() {
+      gameRunning = false;
+      SoundFx.win();
+      document.getElementById('stageClearDesc').innerText = `أنهيت المرحلة ${currentStage} بنجاح ساحق! النقاط المستهدفة تم تحقيقها.`;
+      document.getElementById('stageClearScreen').classList.remove('hidden');
+    }
+
+    function proceedToNextStage() {
+      currentStage++;
+      stageScore = 0;
+      bombsCount = 5; // تجديد القنابل لكل مرحلة
+      currentBomb = null;
+      updateBombButtonState();
+
+      enemies = [];
+      gems = [];
+      for (let i = 0; i < 9; i++) gems.push(new StageGem(player.x, player.y));
+
+      document.getElementById('stageNumVal').innerText = currentStage;
+      checkStageProgress();
+      document.getElementById('stageClearScreen').classList.add('hidden');
+      gameRunning = true;
+    }
 
     function startNewGame() {
-      const cfg = HEROES[currentHeroKey];
-      player = new HeroPlayer(cfg);
+      const hero = HERO_PROFILES[selectedHeroKey];
+      const weapon = WEAPON_PROFILES[selectedWeaponKey];
+      player = new GamePlayer(hero, weapon);
+
+      currentStage = 1;
+      stageScore = 0;
+      totalScore = 0;
+      bombsCount = 5;
+      currentBomb = null;
+      updateBombButtonState();
+
       enemies = [];
       gems = [];
       particles = [];
-      score = 0;
-      waveNumber = 1;
-      gameStartTime = Date.now();
       gameRunning = true;
 
-      // إنشاء جواهر حول اللاعب
-      for (let i = 0; i < 9; i++) gems.push(new WorldGem(player.x, player.y));
+      for (let i = 0; i < 9; i++) gems.push(new StageGem(player.x, player.y));
+
+      document.getElementById('stageNumVal').innerText = currentStage;
+      checkStageProgress();
 
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('lossScreen').classList.add('hidden');
@@ -893,21 +960,84 @@
       document.getElementById('controlsGroup').classList.remove('opacity-0');
     }
 
+    // إدارة زر القنبلة المزدوج (ازرع / فجّر)
+    const bombBtn = document.getElementById('bombBtn');
+    const bombBtnIcon = document.getElementById('bombBtnIcon');
+    const bombBtnLabel = document.getElementById('bombBtnLabel');
+
+    function updateBombButtonState() {
+      document.getElementById('bombsLeftVal').innerText = bombsCount;
+      if (currentBomb) {
+        bombBtnIcon.innerText = '💥';
+        bombBtnLabel.innerText = 'تفجير!';
+        bombBtn.style.background = 'radial-gradient(circle at 35% 35%, #ef4444, #7f1d1d)';
+      } else {
+        bombBtnIcon.innerText = '💣';
+        bombBtnLabel.innerText = `ازرع (${bombsCount})`;
+        bombBtn.style.background = 'radial-gradient(circle at 35% 35%, #f97316, #c2410c)';
+      }
+    }
+
+    function handleBombAction() {
+      if (!gameRunning || !player) return;
+
+      if (!currentBomb) {
+        // زرع قنبلة
+        if (bombsCount > 0) {
+          bombsCount--;
+          currentBomb = new DecoyBomb(player.x, player.y);
+          SoundFx.bombPlant();
+          updateBombButtonState();
+        }
+      } else {
+        // تفجير القنبلة وإبادة الوحوش حولها
+        SoundFx.nukeBoom();
+        addShockwave(currentBomb.x, currentBomb.y, '#f97316', 35);
+        addShockwave(currentBomb.x, currentBomb.y, '#ef4444', 25);
+
+        // تدمير الأعداء في محيط 280 بكسل
+        for (let i = enemies.length - 1; i >= 0; i--) {
+          const em = enemies[i];
+          if (Math.hypot(em.x - currentBomb.x, em.y - currentBomb.y) < 280) {
+            addShockwave(em.x, em.y, em.color, 14);
+            addScore(em.scoreValue);
+            enemies.splice(i, 1);
+          }
+        }
+        currentBomb = null;
+        updateBombButtonState();
+      }
+    }
+
+    bombBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      handleBombAction();
+    }, { passive: false });
+
+    document.getElementById('attackBtn').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (gameRunning && player) player.performAttack();
+    }, { passive: false });
+
+    document.getElementById('dashBtn').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (gameRunning && player && player.dashCooldown <= 0) player.performDash();
+    }, { passive: false });
+
     function updateGameEngine() {
       if (!gameRunning) return;
-
-      const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
-      waveNumber = 1 + Math.floor(elapsed / 25);
 
       player.update();
       camera.update(player.x, player.y);
 
-      // ظهور الأعداء حول اللاعب في العالم المفتوح
-      enemySpawnCounter++;
-      const spawnInterval = Math.max(30, 85 - (waveNumber * 6));
-      if (enemySpawnCounter > spawnInterval && enemies.length < 25) {
-        enemySpawnCounter = 0;
-        enemies.push(new MonsterEnemy(player.x, player.y));
+      if (currentBomb) currentBomb.update();
+
+      // ظهور الأعداء
+      enemySpawner++;
+      const spawnRate = Math.max(22, 75 - (currentStage * 8));
+      if (enemySpawner > spawnRate && enemies.length < (20 + currentStage * 4)) {
+        enemySpawner = 0;
+        enemies.push(new VarietyEnemy(player.x, player.y, currentStage));
       }
 
       // التقاط الجواهر
@@ -916,25 +1046,25 @@
         g.update();
         if (Math.hypot(player.x - g.x, player.y - g.y) < 32) {
           gems.splice(i, 1);
-          score += 100;
+          addScore(100);
           SoundFx.gem();
           addShockwave(g.x, g.y, '#38bdf8');
-          gems.push(new WorldGem(player.x, player.y));
+          gems.push(new StageGem(player.x, player.y));
         }
       }
 
-      // تصادم الوحوش
+      // تصادم وتفاعل الوحوش
       for (let i = enemies.length - 1; i >= 0; i--) {
         const em = enemies[i];
-        em.update(player);
+        em.update(player, currentBomb);
 
         const d = Math.hypot(player.x - em.x, player.y - em.y);
         if (d < em.radius + 20) {
-          // الاندفاع بالدش يدمر الوحش
+          // هجوم الدش يدمر الوحش
           if (player.isDashing) {
             SoundFx.kill();
             addShockwave(em.x, em.y, em.color);
-            score += 150;
+            addScore(em.scoreValue);
             enemies.splice(i, 1);
             continue;
           }
@@ -953,7 +1083,7 @@
         }
       }
 
-      // تحديث جزيئات الغبار والأثر
+      // الجزيئات
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
@@ -962,25 +1092,11 @@
         if (p.alpha <= 0) particles.splice(i, 1);
       }
 
-      // تحديث الواجهة
+      // تحديث شريط القيادة
       const hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
       document.getElementById('hpBar').style.width = `${hpPct}%`;
       document.getElementById('hpText').innerText = `${Math.ceil(hpPct)}%`;
-      document.getElementById('scoreVal').innerText = score;
-      document.getElementById('waveVal').innerText = waveNumber;
-      
-      const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
-      const s = (elapsed % 60).toString().padStart(2, '0');
-      document.getElementById('timeVal').innerText = `${m}:${s}`;
-
-      const dashTxt = document.getElementById('dashState');
-      if (player.dashCooldown <= 0) {
-        dashTxt.innerText = 'جاهز!';
-        dashTxt.className = 'text-emerald-400 font-bold';
-      } else {
-        dashTxt.innerText = 'شحن...';
-        dashTxt.className = 'text-amber-400';
-      }
+      document.getElementById('scoreVal').innerText = totalScore;
     }
 
     function endGame() {
@@ -990,66 +1106,58 @@
       joyInput = { x: 0, y: 0 };
       joystickKnob.style.transform = `translate(0px, 0px)`;
 
-      const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
-      const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
-      const s = (elapsed % 60).toString().padStart(2, '0');
-
-      document.getElementById('finalScoreTxt').innerText = score;
-      document.getElementById('finalTimeTxt').innerText = `${m}:${s}`;
+      document.getElementById('finalScoreTxt').innerText = totalScore;
+      document.getElementById('finalStageTxt').innerText = currentStage;
       document.getElementById('lossScreen').classList.remove('hidden');
       document.getElementById('hudBar').classList.add('opacity-0');
       document.getElementById('controlsGroup').classList.add('opacity-0');
     }
 
     /* ==========================================================================
-       رسم العالم والخلفية المكررة مع الكاميرا
+       رسم الساحة المطورة ذات الإضاءة والشبكة الفضائية
        ========================================================================== */
-    function drawWorldBackground() {
-      // ملء الشاشة بنمط الصورة المكررة إذا كانت محملة
-      if (bgPattern) {
-        ctx.save();
-        ctx.translate(-camera.x, -camera.y);
-        ctx.fillStyle = bgPattern;
-        ctx.fillRect(camera.x, camera.y, width, height);
+    function drawArenaField() {
+      // سماء داكنة بنجوم عميقة
+      ctx.fillStyle = '#030511';
+      ctx.fillRect(0, 0, width, height);
 
-        // طبقة تعتيم وغباش نيون داكن فوق الصورة لتبدو سينمائية ومريحة للعين
-        ctx.fillStyle = 'rgba(3, 7, 20, 0.72)';
-        ctx.fillRect(camera.x, camera.y, width, height);
-        ctx.restore();
-      } else {
-        // خلفية بديلة نيون في حال عدم اكتمال تحميل الصورة
-        ctx.fillStyle = '#060a18';
-        ctx.fillRect(0, 0, width, height);
-      }
-
-      // رسم شبكة ليزرية فضائية ناعمة فوق الخلفية لتعطي إحساس السرعة والمكان
+      // رسم شبكة ليزرية متوهجة تتحرك مع الكاميرا
       ctx.save();
-      ctx.translate(-camera.x % 60, -camera.y % 60);
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
+      ctx.translate(-camera.x % 70, -camera.y % 70);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
       ctx.lineWidth = 1;
-      for (let x = -60; x <= width + 60; x += 60) {
+      for (let x = -70; x <= width + 70; x += 70) {
         ctx.beginPath();
-        ctx.moveTo(x, -60);
-        ctx.lineTo(x, height + 60);
+        ctx.moveTo(x, -70);
+        ctx.lineTo(x, height + 70);
         ctx.stroke();
       }
-      for (let y = -60; y <= height + 60; y += 60) {
+      for (let y = -70; y <= height + 70; y += 70) {
         ctx.beginPath();
-        ctx.moveTo(-60, y);
-        ctx.lineTo(width + 60, y);
+        ctx.moveTo(-70, y);
+        ctx.lineTo(width + 70, y);
         ctx.stroke();
       }
+      ctx.restore();
+
+      // حلقات توهج نيونية على الأرضية
+      ctx.save();
+      ctx.translate(-camera.x, -camera.y);
+      ctx.strokeStyle = 'rgba(236, 72, 153, 0.15)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 450, 0, Math.PI * 2);
+      ctx.stroke();
       ctx.restore();
     }
 
     function renderEngine() {
-      drawWorldBackground();
+      drawArenaField();
 
-      // رسم عناصر اللعبة بناءً على موقع الكاميرا
       ctx.save();
       ctx.translate(-camera.x, -camera.y);
 
-      // آثار الأقدام والغبار
+      // رسم آثار الأقدام والغبار
       particles.forEach(p => {
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.alpha);
@@ -1062,55 +1170,78 @@
         ctx.restore();
       });
 
+      // رسم القنبلة الخداعية إذا كانت مزروعة
+      if (currentBomb) currentBomb.draw();
+
       gems.forEach(g => g.draw());
       enemies.forEach(e => e.draw());
 
-      if (player && gameRunning) {
+      if (player && (gameRunning || currentStage > 1)) {
         player.draw();
       }
 
       ctx.restore();
     }
 
-    function mainLoop() {
+    function gameLoop() {
       updateGameEngine();
       renderEngine();
-      requestAnimationFrame(mainLoop);
+      requestAnimationFrame(gameLoop);
     }
-    mainLoop();
+    gameLoop();
 
     /* ==========================================================================
-       أزرار واجهة المستخدم
+       أزرار واجهات الاختيار والقوائم
        ========================================================================== */
     const heroCards = document.querySelectorAll('.hero-card');
-    heroCards.forEach(card => {
-      card.addEventListener('click', () => {
+    heroCards.forEach(c => {
+      c.addEventListener('click', () => {
         SoundFx.init();
         SoundFx.gem();
-        heroCards.forEach(c => {
-          c.classList.remove('border-cyan-400', 'border-amber-400', 'border-pink-400', 'opacity-100');
-          c.classList.add('border-gray-700', 'opacity-70');
+        heroCards.forEach(x => {
+          x.classList.remove('border-cyan-400', 'border-amber-400', 'border-pink-400', 'opacity-100');
+          x.classList.add('border-gray-700', 'opacity-70');
         });
-        card.classList.remove('border-gray-700', 'opacity-70');
-        card.classList.add('opacity-100');
+        c.classList.remove('border-gray-700', 'opacity-70');
+        c.classList.add('opacity-100');
+        selectedHeroKey = c.getAttribute('data-hero');
+        if (selectedHeroKey === 'ninja') c.classList.add('border-cyan-400');
+        if (selectedHeroKey === 'mech') c.classList.add('border-amber-400');
+        if (selectedHeroKey === 'trooper') c.classList.add('border-pink-400');
+      });
+    });
 
-        currentHeroKey = card.getAttribute('data-hero');
-        if (currentHeroKey === 'ninja') card.classList.add('border-cyan-400');
-        if (currentHeroKey === 'mech') card.classList.add('border-amber-400');
-        if (currentHeroKey === 'trooper') card.classList.add('border-pink-400');
+    const weaponCards = document.querySelectorAll('.weapon-card');
+    weaponCards.forEach(c => {
+      c.addEventListener('click', () => {
+        SoundFx.init();
+        SoundFx.gem();
+        weaponCards.forEach(x => {
+          x.classList.remove('border-amber-400', 'border-cyan-400', 'border-pink-400', 'opacity-100');
+          x.classList.add('border-gray-700', 'opacity-70');
+        });
+        c.classList.remove('border-gray-700', 'opacity-70');
+        c.classList.add('opacity-100');
+        selectedWeaponKey = c.getAttribute('data-weapon');
+        if (selectedWeaponKey === 'katana') c.classList.add('border-amber-400');
+        if (selectedWeaponKey === 'hammer') c.classList.add('border-cyan-400');
+        if (selectedWeaponKey === 'spear') c.classList.add('border-pink-400');
       });
     });
 
     document.getElementById('startBtn').addEventListener('click', () => {
       SoundFx.init();
-      SoundFx.power();
       startNewGame();
     });
 
     document.getElementById('restartBtn').addEventListener('click', () => {
       SoundFx.init();
-      SoundFx.power();
       startNewGame();
+    });
+
+    document.getElementById('nextStageBtn').addEventListener('click', () => {
+      SoundFx.init();
+      proceedToNextStage();
     });
 
     const muteBtn = document.getElementById('muteBtn');
